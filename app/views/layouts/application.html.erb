@@ -25,12 +25,12 @@
               <%= image_tag "ADShopping.png", class: "h-19 -ml-3" %>
             </div>
             <nav class="flex-1 space-y-1 px-2">
-              <a href="#" class="text-white hover:bg-neutral-900 hover:text-white hover:rounded-full group flex items-center rounded-md px-5 py-5 font-medium ">
+              <%= link_to root_path, class: "text-white hover:bg-neutral-900 hover:text-white hover:rounded-full group flex items-center rounded-md px-5 py-5 font-medium" do %>
                 <svg class="text-white mr-3 h-6 w-6 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" aria-hidden="true">
                   <path stroke-linecap="round" stroke-linejoin="round" d="M2.25 12l8.954-8.955c.44-.439 1.152-.439 1.591 0L21.75 12M4.5 9.75v10.125c0 .621.504 1.125 1.125 1.125H9.75v-4.875c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125V21h4.125c.621 0 1.125-.504 1.125-1.125V9.75M8.25 21h8.25" />
                 </svg>
                 Home
-              </a>
+              <% end %>
 
               <button onclick="toggleProducts()" class="w-full text-white hover:bg-neutral-900 hover:text-white hover:rounded-full group flex items-center rounded-md px-5 py-5 font-medium">
                 <svg class="text-white group-hover:text-white mr-3 h-6 w-6 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" aria-hidden="true">
@@ -152,9 +152,12 @@
           </button>
         </div>
         <main class="flex-1">
-          <div class="py-6">
+          <div class="<%= params[:controller] == "home" && current_user.blank? ? "pb-6" : "py-6" %>">
             <div class="max-w-full mx-auto px-4 sm:px-6 md:px-8">
               <%= render 'shared/session_notifications' %>
+              <% if params[:controller] == "home" && current_user.blank? %>
+                <%= render 'shared/recomandation' %>
+              <% end %>
               <%= yield %>
             </div>
           </div>
