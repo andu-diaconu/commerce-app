@@ -72,4 +72,8 @@ group :test do
   gem "webdrivers"
 end
 
+# css gem
 gem "tailwindcss-rails", "~> 2.0"
+
+# authentication gem
+gem 'devise'
