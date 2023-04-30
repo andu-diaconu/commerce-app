@@ -10,9 +10,20 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2023_04_30_211147) do
+ActiveRecord::Schema[7.0].define(version: 2023_04_30_214124) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
+
+  create_table "billing_addresses", force: :cascade do |t|
+    t.string "country"
+    t.string "district"
+    t.string "city"
+    t.string "street"
+    t.string "bl"
+    t.string "apartament"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
 
   create_table "brands", force: :cascade do |t|
     t.string "name", default: "", null: false
@@ -25,6 +36,25 @@ ActiveRecord::Schema[7.0].define(version: 2023_04_30_211147) do
   create_table "carts", force: :cascade do |t|
     t.string "status"
     t.integer "user_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  create_table "credit_cards", force: :cascade do |t|
+    t.string "card"
+    t.string "number"
+    t.string "month"
+    t.string "year"
+    t.string "cvv"
+    t.string "owner"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  create_table "discounts", force: :cascade do |t|
+    t.string "code"
+    t.decimal "value"
+    t.integer "brand_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end
@@ -133,6 +163,31 @@ ActiveRecord::Schema[7.0].define(version: 2023_04_30_211147) do
     t.datetime "updated_at", null: false
   end
 
+  create_table "messages", force: :cascade do |t|
+    t.bigint "sender_id"
+    t.bigint "receiver_id"
+    t.text "content", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["receiver_id"], name: "index_messages_on_receiver_id"
+    t.index ["sender_id"], name: "index_messages_on_sender_id"
+  end
+
+  create_table "orders", force: :cascade do |t|
+    t.decimal "subtotal"
+    t.decimal "shipping_tax"
+    t.integer "discount_id"
+    t.decimal "total"
+    t.string "payment_method"
+    t.string "delivery_method"
+    t.integer "user_id"
+    t.integer "shipping_address_id"
+    t.integer "billing_address_id"
+    t.integer "credit_card_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
   create_table "packages", force: :cascade do |t|
     t.string "name", default: "", null: false
     t.string "description"
@@ -144,6 +199,15 @@ ActiveRecord::Schema[7.0].define(version: 2023_04_30_211147) do
     t.integer "cart_id"
     t.integer "product_id"
     t.integer "quantity"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  create_table "product_orders", force: :cascade do |t|
+    t.integer "order_id"
+    t.integer "product_id"
+    t.integer "quantity"
+    t.decimal "price"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end
@@ -162,6 +226,17 @@ ActiveRecord::Schema[7.0].define(version: 2023_04_30_211147) do
   create_table "sensors", force: :cascade do |t|
     t.string "name", default: "", null: false
     t.text "description"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  create_table "shipping_addresses", force: :cascade do |t|
+    t.string "country"
+    t.string "district"
+    t.string "city"
+    t.string "street"
+    t.string "bl"
+    t.string "apartament"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end
@@ -189,4 +264,6 @@ ActiveRecord::Schema[7.0].define(version: 2023_04_30_211147) do
   add_foreign_key "electronics", "electronic_sensors"
   add_foreign_key "entertainments", "entertainment_functions"
   add_foreign_key "entertainments", "entertainment_packages"
+  add_foreign_key "messages", "users", column: "receiver_id"
+  add_foreign_key "messages", "users", column: "sender_id"
 end
