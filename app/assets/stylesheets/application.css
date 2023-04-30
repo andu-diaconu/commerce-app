@@ -13,3 +13,13 @@
  *= require_tree .
  *= require_self
  */
+
+body {
+  background-color: black;
+}
+
+body.devise {
+  background-color: rgba(221,221,221,255);
+  margin-top: 120px;
+  margin-left: 120px;
+}

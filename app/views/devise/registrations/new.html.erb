@@ -1,0 +1,63 @@
+<body class="devise">
+    <div class="flex flex-1 flex-col justify-center py-12 px-4 sm:px-6 lg:flex-none lg:px-20 xl:px-24 bg-gray-200 rounded-xl">
+      <div class="mx-auto w-full max-w-sm lg:w-96">
+        <h2 class="text-center text-2xl tracking-wider font-bold text-gray-900 -mt-20">
+          <%= image_tag "logo.png", class: "h-15" %>
+          Join us! It's free<br/>
+          <%= link_to new_user_session_path, class: " ml-1 text-xs text-indigo-700 text-center tracking-tight font-medium hover:text-indigo-900 hover:font-bold" do %>
+            Already have an account ? Sign in 
+          <% end %>
+        </h2>
+        <div>
+          <div>
+            <%= form_for(resource, :as => resource_name, :url => registration_path(resource_name), html: {class: "space-y-4"}) do |f| %>
+              <div>
+                <label for="email" class="block text-sm font-medium leading-6 text-gray-900">First Name</label>
+                <div class="mt-2">
+                  <%= f.text_field :first_name, autofocus: true, class: "block w-full rounded-md border-0 py-1.5 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" %>
+                </div>
+              </div>
+
+              <div>
+                <label for="email" class="block text-sm font-medium leading-6 text-gray-900">Last Name</label>
+                <div class="mt-2">
+                  <%= f.text_field :last_name, autofocus: true, class: "block w-full rounded-md border-0 py-1.5 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" %>
+                </div>
+              </div>
+
+              <div>
+                <label for="email" class="block text-sm font-medium leading-6 text-gray-900">Email Address</label>
+                <div class="mt-2">
+                  <%= f.email_field :email, autofocus: true, class: "block w-full rounded-md border-0 py-1.5 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" %>
+                </div>
+              </div>
+
+              <div class="space-y-1">
+                <label for="password" class="block text-sm font-medium leading-6 text-gray-900">Password</label>
+                <div class="mt-2">
+                  <%= f.password_field :password, autocomplete: "current-password", class: "block w-full rounded-md border-0 py-1.5 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" %>
+                </div>
+              </div>
+
+              <div class="space-y-1">
+                <label for="password" class="block text-sm font-medium leading-6 text-gray-900">Confirm Password</label>
+                <div class="mt-2">
+                  <%= f.password_field :password_confirmation, class: "block w-full rounded-md border-0 py-1.5 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" %>
+                </div>
+              </div>
+
+
+              <div>
+                <button type="submit" class="bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 flex w-full justify-center rounded-md py-2 px-3 text-sm font-semibold text-white shadow-sm hover:bg-gradient-to-r hover:from-indigo-700 hover:via-purple-700 hover:to-pink-700 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 flex " >
+                  Let's go
+                  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-4 h-4 ml-2">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M15.59 14.37a6 6 0 01-5.84 7.38v-4.8m5.84-2.58a14.98 14.98 0 006.16-12.12A14.98 14.98 0 009.631 8.41m5.96 5.96a14.926 14.926 0 01-5.841 2.58m-.119-8.54a6 6 0 00-7.381 5.84h4.8m2.581-5.84a14.927 14.927 0 00-2.58 5.84m2.699 2.7c-.103.021-.207.041-.311.06a15.09 15.09 0 01-2.448-2.448 14.9 14.9 0 01.06-.312m-2.24 2.39a4.493 4.493 0 00-1.757 4.306 4.493 4.493 0 004.306-1.758M16.5 9a1.5 1.5 0 11-3 0 1.5 1.5 0 013 0z" />
+                  </svg>
+                </button>
+              </div>
+            <% end %>
+          </div>
+        </div>
+      </div>
+    </div>
+</body>

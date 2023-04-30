@@ -1,0 +1,59 @@
+<body class="devise">
+  <div class="flex min-h-full ">
+    <div class="flex flex-1 flex-col justify-center py-12 px-4 sm:px-6 lg:flex-none lg:px-20 xl:px-24 bg-gray-200 rounded-l-xl">
+      <div class="mx-auto w-full max-w-sm lg:w-96">
+        <h2 class="text-center text-3xl font-bold tracking-tigth text-gray-900 -mt-20">
+          <%= image_tag "logo.png", class: "h-15" %>
+          Sign in your account<br/>
+          <%= link_to root_path, class: "text-xs text-indigo-700 text-center tracking-wider font-medium hover:text-indigo-900 hover:font-bold" do %>
+              Go back to site
+          <% end%>
+        </h2>
+                
+        <div class="mt-8">
+          <div class="mt-6">
+            <%= form_for(resource, as: resource_name, url: session_path(resource_name), html: {class: "mt-8 space-y-6"}) do |f| %>
+              <div>
+                <div class="mt-2">
+                  <%= f.email_field :email, autofocus: true, autocomplete: "email", placeholder: "E-mail", class: "block w-full rounded-md border-0 py-1.5 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" %>
+                </div>
+              </div>
+
+              <div class="space-y-1">
+                <div class="mt-2">
+                  <%= f.password_field :password, autocomplete: "current-password", placeholder: "••••••", class: "block w-full rounded-md border-0 py-1.5 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" %>
+                </div>
+              </div>
+
+              <div class="flex items-center justify-between">
+                <div class="flex items-center">
+                  <% if devise_mapping.rememberable? %>
+                      <%= f.check_box :remember_me, class: "h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-gray-300 rounded" %>
+                      <%= f.label :remember_me, class: "ml-2 block text-sm text-gray-900" %>
+                  <% end %>
+                </div>
+
+                <div class="text-sm">
+                  <%= link_to new_user_password_path, class: "font-medium text-indigo-600 hover:text-indigo-900 hover:font-bold" do %>
+                    Forgot your password? 
+                  <% end %>
+                </div>
+              </div>
+
+              <div>
+                <button type="submit" class="mb-1 bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 flex w-full justify-center rounded-md py-2 px-3 text-sm font-semibold text-white shadow-sm hover:bg-gradient-to-r hover:from-indigo-700 hover:via-purple-700 hover:to-pink-700 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600" >Get in</button>
+                <%= link_to new_user_registration_path, class: "ml-1 text-xs text-indigo-700 text-center tracking-wider font-medium hover:text-indigo-900 hover:font-bold" do %>
+                  Don't have an account yet ? Sign up 
+                <% end %>
+              </div>
+
+            <% end %>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="relative hidden w-0 flex-1 lg:block">
+      <%= image_tag "phonelogo.jpg", class: 'h-full rounded-r-xl'%>
+    </div>
+  </div>
+</body>
