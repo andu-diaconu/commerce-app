@@ -7,6 +7,7 @@ class CreateCreditCard < ActiveRecord::Migration[7.0]
       t.string :year
       t.string :cvv
       t.string :owner
+      t.integer :user_id
 
       t.timestamps
     end

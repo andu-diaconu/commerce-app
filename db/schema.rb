@@ -21,6 +21,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_04_30_215818) do
     t.string "street"
     t.string "bl"
     t.string "apartament"
+    t.integer "user_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end
@@ -47,6 +48,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_04_30_215818) do
     t.string "year"
     t.string "cvv"
     t.string "owner"
+    t.integer "user_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end
@@ -237,6 +239,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_04_30_215818) do
     t.string "street"
     t.string "bl"
     t.string "apartament"
+    t.integer "user_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end
@@ -260,7 +263,9 @@ ActiveRecord::Schema[7.0].define(version: 2023_04_30_215818) do
     t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true
   end
 
+  add_foreign_key "billing_addresses", "users"
   add_foreign_key "carts", "users"
+  add_foreign_key "credit_cards", "users"
   add_foreign_key "discounts", "brands"
   add_foreign_key "electronics", "electronic_functions"
   add_foreign_key "electronics", "electronic_sensors"
@@ -284,8 +289,6 @@ ActiveRecord::Schema[7.0].define(version: 2023_04_30_215818) do
   add_foreign_key "product_orders", "orders"
   add_foreign_key "product_orders", "products"
   add_foreign_key "products", "brands"
-  add_foreign_key "users", "billing_addresses"
+  add_foreign_key "shipping_addresses", "users"
   add_foreign_key "users", "brands"
-  add_foreign_key "users", "credit_cards"
-  add_foreign_key "users", "shipping_addresses"
 end

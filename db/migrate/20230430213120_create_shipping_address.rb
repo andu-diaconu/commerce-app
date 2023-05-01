@@ -7,6 +7,7 @@ class CreateShippingAddress < ActiveRecord::Migration[7.0]
       t.string :street
       t.string :bl
       t.string :apartament
+      t.integer :user_id
 
       t.timestamps
     end
