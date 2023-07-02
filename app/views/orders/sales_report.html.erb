@@ -1,0 +1,87 @@
+<div class="mt-10 h-full ">
+  <% if current_user.staff? %>
+    <div id="personal" class="border-b-4 border-gray-900/10 pb-12">
+      <h2 class="text-base font-semibold leading-7 text-white">Most profitable products</h2>
+      <p class="mt-1 text-sm leading-6 text-gray-500">Revenues splitted by products</p>
+
+      <div class="mt-10 flex">
+        <%= pie_chart @most_sold_revenue, round: 2, decimal: ",", zeros: true, prefix: "$", thousands: "." %>
+      </div>
+    </div>
+
+    <div id="personal" class="border-b-4 border-gray-900/10 pb-12">
+      <h2 class="text-base font-semibold leading-7 text-white">Most feedbacked products</h2>
+      <p class="mt-1 text-sm leading-6 text-gray-500">Number of feedbacks per product</p>
+
+      <div class="mt-10 flex">
+        <%= pie_chart @most_feedback, round: 2, thousands: "." %>
+      </div>
+    </div>
+
+    <div id="personal" class="border-b-4 border-gray-900/10 pb-12">
+      <h2 class="text-base font-semibold leading-7 text-white">Most saved products</h2>
+      <p class="mt-1 text-sm leading-6 text-gray-500">Users want to track information about these products the most</p>
+
+      <div class="mt-10 flex">
+        <%= pie_chart @favorites, round: 2, thousands: "." %>
+      </div>
+    </div>
+
+    <div id="personal" class="border-b-4 border-gray-900/10 pb-12">
+      <h2 class="text-base font-semibold leading-7 text-white">Our revenus bsed on countries</h2>
+      <p class="mt-1 text-sm leading-6 text-gray-500">Shipping Addresses revenues per country (USA, Romania & UK available) </p>
+
+      <div class="mt-10 flex">
+        <%= pie_chart @revenues_country, round: 2, decimal: ",", zeros: true, prefix: "$", thousands: "." %>
+      </div>
+    </div>
+
+  <% else %>
+
+    <div id="personal" class="border-b-4 border-gray-900/10 pb-12">
+      <h2 class="text-base font-semibold leading-7 text-white">Sellers Report</h2>
+      <p class="mt-1 text-sm leading-6 text-gray-500">Each brand revenues</p>
+
+      <div class="mt-10 flex">
+        <%= pie_chart @most_brand, round: 2, decimal: ",", zeros: true, prefix: "$", thousands: "." %>
+      </div>
+    </div>
+
+    <div id="personal" class="border-b-4 border-gray-900/10 pb-12">
+      <h2 class="text-base font-semibold leading-7 text-white">Orders distribution</h2>
+      <p class="mt-1 text-sm leading-6 text-gray-500">How many users are signing up for an order?</p>
+
+      <div class="mt-10 flex">
+        <%= pie_chart @count_by_customer_type, round: 2, thousands: "." %>
+      </div>
+    </div>
+
+    <div id="personal" class="border-b-4 border-gray-900/10 pb-12">
+      <h2 class="text-base font-semibold leading-7 text-white">Delivery Method</h2>
+      <p class="mt-1 text-sm leading-6 text-gray-500">Are the users used to hurry up the orders delivery? </p>
+
+      <div class="mt-10 flex">
+        <%= pie_chart @delivery, round: 2, thousands: "." %>
+      </div>
+    </div>
+
+    <div id="personal" class="border-b-4 border-gray-900/10 pb-12">
+      <h2 class="text-base font-semibold leading-7 text-white">Most used payment method</h2>
+      <p class="mt-1 text-sm leading-6 text-gray-500">Revenues splitted by pyament method</p>
+
+      <div class="mt-10 flex">
+        <%= pie_chart @revenues_payment, round: 2, decimal: ",", zeros: true, prefix: "$", thousands: "." %>
+      </div>
+    </div>
+
+      <div id="personal" class="border-b-4 border-gray-900/10 pb-12">
+      <h2 class="text-base font-semibold leading-7 text-white">Types of Credit Card</h2>
+      <p class="mt-1 text-sm leading-6 text-gray-500">Users use to pay more with these types of Credit Card..</p>
+
+      <div class="mt-10 flex">
+        <%= pie_chart @card_types, round: 2, decimal: ",", zeros: true, prefix: "$", thousands: "."  %>
+      </div>
+    </div>
+    
+  <% end %>
+</div>

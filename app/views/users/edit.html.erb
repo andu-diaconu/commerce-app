@@ -1,0 +1,415 @@
+<div class="bg-white p-10 rounded-3xl h-full">
+<form id="myForm" onsubmit="return validateForm()" action="/users/<%=params[:id].to_i%>" method="put" enctype="multipart/form-data">
+  <div class="space-y-12 h-full">
+    <div class="pb-12">
+      <h2 class="text-base font-semibold leading-7 text-gray-900"><%= current_user.id == params[:id].to_i ? "You Profile" : "Profile" %></h2>
+
+        <div class="col-span-full mt-4">
+          <div class="mt-2 flex items-center gap-x-3">
+            <img class="h-12 w-12 rounded-full object-cover" src="<%=(current_user.image.url || "https://adshopping.s3.eu-north-1.amazonaws.com/uploads/users/unkown/unknown.jpg")%>">
+            <label for="upload-image" id="upload-image-label" class="rounded-md bg-white px-2.5 py-1.5 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50 cursor-pointer">Change</label>
+            <input id="upload-image" name="upload-image" type="file" class="hidden" accept="image/*" onchange="displayFileName(this)">
+          </div>
+        </div>
+        <br/>
+        <% if current_user.role == "Client" %>
+          <div class="flex text-sm text-gray-900">
+            <div class="mr-4">
+              <label>
+                <input id="personalInfo" class="text-orange-600 billing-option" type="radio" name="panel" value="personal" checked>
+                Personal Information
+              </label>
+            </div>
+
+            <div class="mr-4">
+              <label>
+                <input id="billInfo" class="text-orange-600 billing-option" type="radio" name="panel" value="billing">
+                Billing Address
+              </label>
+            </div>
+
+            <div class="mr-4">
+              <label>
+                <input id="shippInfo" class="text-orange-600 billing-option" type="radio" name="panel" value="shipping">
+                Shipping Address
+              </label>
+            </div>
+
+            <div>
+              <label>
+                <input id="ccInfo" class="text-orange-600 billing-option" type="radio" name="panel" value="ccardinfo">
+                Credit Card Info
+              </label>
+            </div>
+          </div>
+        <% end %>
+      </div>
+    </div>
+
+    <div id="personal" class="border-b-4 border-gray-900/10 pb-12">
+      <h2 class="text-base font-semibold leading-7 text-gray-900">Personal Information</h2>
+      <button onClick="clearPersonal()" type="button" class="text-red-600 font-bold float-right flex-end">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-6 h-6">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M14.74 9l-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 01-2.244 2.077H8.084a2.25 2.25 0 01-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 00-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 013.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 00-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 00-7.5 0" />
+        </svg>
+      </button>
+      <p class="mt-1 text-sm leading-6 text-gray-600">Remember! Your e-mail address is used to sign in</p>
+
+      <div class="mt-10 grid grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6">
+        <div class="sm:col-span-3">
+          <label for="first-name" class="block text-sm font-medium leading-6 text-gray-900">First name</label>
+          <div class="mt-2">
+            <input value="<%=current_user.first_name%>" type="text" name="first-name" id="first-name" autocomplete="given-name" class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-orange-600 sm:text-sm sm:leading-6">
+          </div>
+        </div>
+
+        <div class="sm:col-span-3">
+          <label for="last-name" class="block text-sm font-medium leading-6 text-gray-900">Last name</label>
+          <div class="mt-2">
+            <input value="<%=current_user.last_name%>" type="text" name="last-name" id="last-name" autocomplete="family-name" class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-orange-600 sm:text-sm sm:leading-6">
+          </div>
+        </div>
+
+        <div class="sm:col-span-4">
+          <label for="email" class="block text-sm font-medium leading-6 text-gray-900">Email address</label>
+          <div class="mt-2">
+            <input value="<%=current_user.email%>" id="email" name="email" type="email" autocomplete="email" class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-orange-600 sm:text-sm sm:leading-6">
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div id="bil" class="hidden border-b-4 border-gray-900/10 pb-12">
+      <h2 class="text-base font-semibold leading-7 text-gray-900 mt-10">Billing Address</h2>
+      <button onClick="clearBill()" type="button" class="text-red-600 font-bold float-right flex-end">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-6 h-6">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M14.74 9l-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 01-2.244 2.077H8.084a2.25 2.25 0 01-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 00-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 013.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 00-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 00-7.5 0" />
+        </svg>
+      </button>
+      <p class="mt-1 text-sm leading-6 text-gray-600">This will be used in invoices<br/>If one of the fields are empty none of the address will be saved!</p>
+      <div id="new-billing" class="mt-10 grid grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6">
+        <div class="sm:col-span-3">
+          <label for="first-name" class="block text-sm font-medium leading-6 text-gray-900">First name</label>
+          <div class="mt-2">
+            <input value="<%=(current_user.billing_address.first_name rescue "")%>" type="text"   name="first-name-billing" id="first-name-billing" class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-orange-600 sm:text-sm sm:leading-6">
+          </div>
+        </div>
+
+        <div class="sm:col-span-3">
+          <label for="last-name" class="block text-sm font-medium leading-6 text-gray-900">Last name</label>
+          <div class="mt-2">
+            <input value="<%=(current_user.billing_address.last_name rescue "")%>" type="text"  name="last-name-billing" id="last-name-billing" class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-orange-600 sm:text-sm sm:leading-6">
+          </div>
+        </div>
+
+        <div class="sm:col-span-4">
+          <label for="email" class="block text-sm font-medium leading-6 text-gray-900">Email address</label>
+          <div class="mt-2">
+            <input value="<%=(current_user.billing_address.email rescue "")%>" id="email-billing"  name="email-billing" type="email" class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-orange-600 sm:text-sm sm:leading-6">
+          </div>
+        </div>
+
+        <div class="sm:col-span-4">
+          <label for="phone" class="block text-sm font-medium leading-6 text-gray-900">Phone number</label>
+          <div class="mt-2">
+            <input value=<%=(current_user.billing_address.phone rescue "")%> id="phone-billing"  name="phone-billing" type="number" class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-orange-600 sm:text-sm sm:leading-6">
+          </div>
+        </div>
+
+        <div class="sm:col-span-3">
+          <label for="country" class="block text-sm font-medium leading-6 text-gray-900">Country</label>
+          <div class="mt-2">
+            <select value="<%=(current_user.billing_address.country rescue "")%>" id="country-billing" name="country-billing" class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-orange-600 sm:max-w-xs sm:text-sm sm:leading-6">
+              <option value="Romania">Romania</option>
+              <option value="United States">United States</option>
+              <option value="United Kingdom">United Kingdom</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="col-span-full">
+          <label for="street-address" class="block text-sm font-medium leading-6 text-gray-900">Street address</label>
+          <div class="mt-2">
+            <input value="<%=(current_user.billing_address.street rescue "")%>" type="text"  name="street-billing" id="street-billing" class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-orange-600 sm:text-sm sm:leading-6">
+          </div>
+        </div>
+
+        <div class="sm:col-span-2 sm:col-start-1">
+          <label for="city" class="block text-sm font-medium leading-6 text-gray-900">City</label>
+          <div class="mt-2">
+            <input value="<%=(current_user.billing_address.city rescue "")%>" type="text"   name="city-billing" id="city-billing" class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-orange-600 sm:text-sm sm:leading-6">
+          </div>
+        </div>
+
+        <div class="sm:col-span-2">
+          <label for="region" class="block text-sm font-medium leading-6 text-gray-900">District</label>
+          <div class="mt-2">
+            <input value="<%=(current_user.billing_address.district rescue "")%>" type="text"  name="district-billing" id="district-billing" class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-orange-600 sm:text-sm sm:leading-6">
+          </div>
+        </div>
+
+        <div class="sm:col-span-2">
+          <label for="postal-code" class="block text-sm font-medium leading-6 text-gray-900">Building No.</label>
+          <div class="mt-2">
+            <input value="<%=(current_user.billing_address.bl rescue "")%>" type="text"  name="bl-billing" id="bl-billing" class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-orange-600 sm:text-sm sm:leading-6">
+          </div>
+        </div>
+      </div>  
+      
+    </div>
+
+    <div id="shp" class="hidden border-b-4 border-gray-900/10 pb-12">
+      <h2 class="text-base font-semibold leading-7 text-gray-900 mt-10">Shipping Address</h2>
+      <button onClick="clearShip()" type="button" class="text-red-600 font-bold float-right flex-end">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-6 h-6">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M14.74 9l-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 01-2.244 2.077H8.084a2.25 2.25 0 01-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 00-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 013.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 00-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 00-7.5 0" />
+        </svg>
+      </button>
+      <p class="mt-1 text-sm leading-6 text-gray-600">This will be used to deliver the packages to you<br/>If one of the fields are empty none of the address will be saved!</p>
+      <div id="new-shipping" class="mt-10 grid grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6">
+
+
+        <div class="sm:col-span-3">
+          <label for="first-name" class="block text-sm font-medium leading-6 text-gray-900">First name</label>
+          <div class="mt-2">
+            <input value="<%=(current_user.shipping_address.first_name rescue "")%>" type="text"   name="first-name-shipping" id="first-name-shipping" class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-orange-600 sm:text-sm sm:leading-6">
+          </div>
+        </div>
+
+        <div class="sm:col-span-3">
+          <label for="last-name" class="block text-sm font-medium leading-6 text-gray-900">Last name</label>
+          <div class="mt-2">
+            <input value="<%=(current_user.shipping_address.last_name rescue "")%>" type="text"  name="last-name-shipping" id="last-name-shipping" class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-orange-600 sm:text-sm sm:leading-6">
+          </div>
+        </div>
+
+        <div class="sm:col-span-4">
+          <label for="email" class="block text-sm font-medium leading-6 text-gray-900">Email address</label>
+          <div class="mt-2">
+            <input value="<%=(current_user.shipping_address.email rescue "")%>" id="email-shipping"  name="email-shipping" type="email" class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-orange-600 sm:text-sm sm:leading-6">
+          </div>
+        </div>
+
+        <div class="sm:col-span-4">
+          <label for="phone" class="block text-sm font-medium leading-6 text-gray-900">Phone number</label>
+          <div class="mt-2">
+            <input value=<%=(current_user.shipping_address.phone rescue "")%> id="phone-shipping"  name="phone-shipping" type="number" class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-orange-600 sm:text-sm sm:leading-6">
+          </div>
+        </div>
+
+        <div class="sm:col-span-3">
+          <label for="country" class="block text-sm font-medium leading-6 text-gray-900">Country</label>
+          <div class="mt-2">
+            <select value="<%=(current_user.shipping_address.country rescue "")%>" id="country-shipping" name="country-shipping" class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-orange-600 sm:max-w-xs sm:text-sm sm:leading-6">
+              <option value="Romania">Romania</option>
+              <option value="United States">United States</option>
+              <option value="United Kingdom">United Kingdom</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="col-span-full">
+          <label for="street-address" class="block text-sm font-medium leading-6 text-gray-900">Street address</label>
+          <div class="mt-2">
+            <input value="<%=(current_user.shipping_address.street rescue "")%>" type="text"  name="street-shipping" id="street-shipping" class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-orange-600 sm:text-sm sm:leading-6">
+          </div>
+        </div>
+
+        <div class="sm:col-span-2 sm:col-start-1">
+          <label for="city" class="block text-sm font-medium leading-6 text-gray-900">City</label>
+          <div class="mt-2">
+            <input value="<%=(current_user.shipping_address.city rescue "")%>" type="text"   name="city-shipping" id="city-shipping" class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-orange-600 sm:text-sm sm:leading-6">
+          </div>
+        </div>
+
+        <div class="sm:col-span-2">
+          <label for="region" class="block text-sm font-medium leading-6 text-gray-900">District</label>
+          <div class="mt-2">
+            <input value="<%=(current_user.shipping_address.district rescue "")%>" type="text"  name="district-shipping" id="district-shipping" class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-orange-600 sm:text-sm sm:leading-6">
+          </div>
+        </div>
+
+        <div class="sm:col-span-2">
+          <label for="postal-code" class="block text-sm font-medium leading-6 text-gray-900">Building No.</label>
+          <div class="mt-2">
+            <input value="<%=(current_user.shipping_address.bl rescue "")%>" type="text"  name="bl-shipping" id="bl-shipping" class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-orange-600 sm:text-sm sm:leading-6">
+          </div>
+        </div>
+
+      </div>  
+    </div>
+
+    <div id="ccard" class="hidden border-b-4 border-gray-900/10 pb-12">
+      <button onClick="clearCard()" type="button" class="text-red-600 font-bold float-right flex-end">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-6 h-6">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M14.74 9l-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 01-2.244 2.077H8.084a2.25 2.25 0 01-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 00-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 013.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 00-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 00-7.5 0" />
+        </svg>
+      </button>
+      <h2 class="text-base font-semibold leading-7 text-gray-900 mt-10">Credit Card Details</h2>
+      <p class="mt-1 text-sm leading-6 text-gray-600">If one of the fields are empty none of the details will be saved!</p>
+      <div id="credit-card-form" class="mt-4">
+        <label for="cardholder-name" class="block mt-2 text-sm font-medium text-gray-900">Cardholder's Name</label>
+        <input value="<%=(current_user.credit_card.owner rescue "")%>"  type="text" id="cardholder-name" name="cardholder-name" class="block w-full rounded-md border-gray-300 shadow-sm focus:ring-orange-500 focus:border-orange-500 sm:text-sm">
+        <br/>
+        <label for="card-number" class="block text-sm font-medium text-gray-900">Card Number</label>
+        <input value="<%=(current_user.credit_card.number rescue "")%>" type="number" id="card-number" name="card-number" class="block w-full rounded-md border-gray-300 shadow-sm focus:ring-orange-500 focus:border-orange-500 sm:text-sm"/>
+        <br/>
+        <div class="mt-2">
+          <label for="expiration-month" class="block text-sm font-medium text-gray-900">Expiration Date</label>
+          <div class="flex space-x-2">
+            <select value="<%=(current_user.credit_card.month rescue "")%>" id="expiration-month" name="expiration-month" class="block w-1/2 rounded-md border-gray-300 shadow-sm focus:ring-orange-500 focus:border-orange-500 sm:text-sm">
+              <% ["01","02","03","04","05","06","07","08","09","10","11","12"].each do |month|%>
+                <option value="<%=month%>"><%= month %></option>
+              <% end %>
+            </select>
+            <select value="<%=(current_user.credit_card.year rescue "")%>" id="expiration-year" name="expiration-year" class="block w-1/2 rounded-md border-gray-300 shadow-sm focus:ring-orange-500 focus:border-orange-500 sm:text-sm">
+              <option value="24">24</option>
+              <option value="25">25</option>
+              <option value="26">26</option>
+              <option value="27">27</option>
+              <option value="28">28</option>
+              <option value="29">29</option>
+              <option value="30">30</option>
+            </select>
+          </div>
+        </div>
+        <br/>
+
+        <label for="cvv" class="block mt-2 text-sm font-medium text-gray-900">CVV</label>
+        <input type="password" id="cvv" name="cvv" class="block w-full rounded-md border-gray-300 shadow-sm focus:ring-orange-500 focus:border-orange-500 sm:text-sm" minlength="3" maxlength="3" value="<%=("#{current_user.credit_card.cvv}" rescue "")%>" />
+        
+        <br/>
+        <div class="mt-2">
+          <label for="card-type" class="block text-sm font-medium text-gray-900">Card Type</label>
+          <select value="<%=(current_user.credit_card.card rescue "")%>" id="card-type" name="card-type" class="block w-full rounded-md border-gray-300 shadow-sm focus:ring-orange-500 focus:border-orange-500 sm:text-sm">
+            <option value="MasterCard">MasterCard</option>
+            <option value="Visa">Visa</option>
+            <option value="Revolut">Revolut</option>
+          </select>
+        </div>
+        <br/>
+      </div>
+    </div>
+    <div class="mt-6 flex items-center justify-end gap-x-6">
+      <button type="submit" class="rounded-md bg-orange-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-orange-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-orange-600">Save</button>
+    </div>
+
+  </div>
+
+
+</form>
+</div>
+
+<script>
+  var personalInfo = document.getElementById("personalInfo")
+  var billInfo = document.getElementById("billInfo")
+  var shipInfo = document.getElementById("shippInfo")
+  var ccInfo = document.getElementById("ccInfo")
+
+  personalInfo.addEventListener("change", function() {
+    if (this.checked) {
+      document.getElementById("personal").style.display = "block";
+      document.getElementById("bil").style.display = "none";
+      document.getElementById("shp").style.display = "none";
+      document.getElementById("ccard").style.display = "none";
+    }
+  })
+
+  billInfo.addEventListener("change", function() {
+    if (this.checked){
+      document.getElementById("bil").style.display = "block";
+      document.getElementById("personal").style.display = "none";
+      document.getElementById("shp").style.display = "none";
+      document.getElementById("ccard").style.display = "none";
+    }
+  })
+
+  shipInfo.addEventListener("change", function() {
+    if (this.checked){
+      document.getElementById("shp").style.display = "block";
+      document.getElementById("personal").style.display = "none";
+      document.getElementById("bil").style.display = "none";
+      document.getElementById("ccard").style.display = "none";
+    }
+  })
+
+  ccInfo.addEventListener("change", function() {
+    if (this.checked) {
+      document.getElementById("ccard").style.display = "block";
+      document.getElementById("personal").style.display = "none";
+      document.getElementById("bil").style.display = "none";
+      document.getElementById("shp").style.display = "none";
+    }
+  })
+
+  function clearPersonal(){
+    document.getElementById("first-name").value = ""
+    document.getElementById("last-name").value = ""
+    document.getElementById("email").value = ""
+  }
+
+  function clearBill(){
+    document.getElementById("first-name-billing").value = "";
+    document.getElementById("last-name-billing").value = "";
+    document.getElementById("email-billing").value = "";
+    document.getElementById("phone-billing").value = "";
+    document.getElementById("city-billing").value = "";
+    document.getElementById("district-billing").value = "";
+    document.getElementById("bl-billing").value = "";
+    document.getElementById("street-billing").value = "";
+    document.getElementById("country-billing").value = "Romania";
+  }
+
+  function clearShip(){
+    document.getElementById("first-name-shipping").value = "";
+    document.getElementById("last-name-shipping").value = "";
+    document.getElementById("email-shipping").value = "";
+    document.getElementById("phone-shipping").value = "";
+    document.getElementById("city-shipping").value = "";
+    document.getElementById("district-shipping").value = "";
+    document.getElementById("bl-shipping").value = "";
+    document.getElementById("country-shipping").value = "Romania";
+    document.getElementById("street-shipping").value = "";
+  }
+
+  function clearCard(){
+    document.getElementById("cardholder-name").value = "";
+    document.getElementById("card-number").value = "";
+    document.getElementById("expiration-month").value = "01";
+    document.getElementById("expiration-year").value = "24";
+    document.getElementById("cvv").value = "";
+    document.getElementById("card-type").value = "MasterCard";
+  }
+
+  function displayFileName(input) {
+    const fileNameLabel = document.querySelector('#upload-image-label');
+    if (input.files.length > 0) {
+      fileNameLabel.textContent = input.files[0].name;
+    } else {
+      fileNameLabel.textContent = 'Change';
+    }
+  }
+
+  function validateForm() {
+    var emailFields = document.querySelectorAll('input[type="email"]');
+    var emailRegex = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
+
+    if(document.getElementById("email").value === ""){
+      alert("Your email is mandatory!");
+      return false;
+    }
+
+    for (var i = 0; i < emailFields.length; i++) {
+      var emailField = emailFields[i];
+      var emailValue = emailField.value;
+
+      if (!emailRegex.test(emailValue)) {
+        if(emailValue !== ""){
+           alert("Please enter a valid email address.");
+          emailField.focus();
+          return false;
+        }
+      }
+    }
+  }
+</script>

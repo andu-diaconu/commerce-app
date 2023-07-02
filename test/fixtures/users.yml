@@ -1,0 +1,9 @@
+staff_user:
+  username: staff_user
+  password_digest: <%= BCrypt::Password.create('password') %>
+  staff: true
+
+regular_user:
+  username: regular_user
+  password_digest: <%= BCrypt::Password.create('password') %>
+  staff: false

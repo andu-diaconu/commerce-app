@@ -1,0 +1,161 @@
+<div class="bg-white h-screen overflow-auto rounded-3xl">
+  <div class="mx-auto max-w-2xl px-4 pb-24 pt-16 sm:px-6 lg:max-w-7xl lg:px-8">
+    <%= button_to empty_cart_path, methd: :post, class: "float-right flex" do %>
+      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-8 h-8 text-red-600">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M14.74 9l-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 01-2.244 2.077H8.084a2.25 2.25 0 01-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 00-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 013.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 00-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 00-7.5 0" />
+      </svg>
+    <% end %>
+    <h1 class="text-3xl font-bold tracking-tight text-gray-900 sm:text-4xl">Shopping Cart</h1>
+    <form class="mt-12 lg:grid lg:grid-cols-12 lg:items-start lg:gap-x-12 xl:gap-x-16">
+      <section aria-labelledby="cart-heading" class="lg:col-span-7">
+
+        <ul role="list" class="divide-y divide-gray-200 border-b border-t border-gray-200">
+          <% if @products.present? %>
+            <% @products.each do |product| %>
+              <li class="flex py-6 sm:py-10">
+                <div class="flex-shrink-0">
+                  <%= link_to product_path(product) do %>
+                    <img src="<%= product.image.url %>" class="h-24 w-24 rounded-md object-cover object-center sm:h-48 sm:w-48">
+                  <% end %>
+                </div>
+
+                <div class="ml-4 flex flex-1 flex-col justify-between sm:ml-6">
+                  <div class="relative pr-9 sm:grid sm:grid-cols-2 sm:gap-x-6 sm:pr-0">
+                    <div>
+                      <div class="flex justify-between">
+                        <h3 class="text-sm">
+                          <span class="font-medium text-gray-700 hover:text-gray-800"><%=product.name.split("|").join("<br/>").html_safe%></a>
+                        </h3>
+                      </div>
+                      <br/>
+                      <p class="mt-1 text-sm font-medium text-green-600">$<%= product.price %></p>
+                    </div>
+
+                    <div class="mt-4 sm:mt-0 sm:pr-9">
+                      <select id="quantity-<%=product.id%>" name="quantity-0" class="max-w-full rounded-md border border-gray-300 py-1.5 text-left text-base font-medium leading-5 text-gray-700 shadow-sm focus:border-orange-500 focus:outline-none focus:ring-1 focus:ring-orange-500 sm:text-sm" onchange="handleChange(<%= product.id %>, this.value);">
+                        <% (1..15).each do |value| %>
+                          <option value="<%= value %>" <%= 'selected' if session[:cart]["#{product.id}"].to_i == value %>>
+                            <%= value %>
+                          </option>
+                        <% end %>
+                      </select>
+
+                      <div class="absolute right-0 top-0">
+                        <%= link_to remove_item_from_cart_path(product_id: product.id), method: :get, class: "-m-2 inline-flex p-2 text-gray-400 hover:text-gray-500", data: { confirm: 'Are you sure?' } do %>
+                          <span class="sr-only">Remove</span>
+                          <svg class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+                            <path d="M6.28 5.22a.75.75 0 00-1.06 1.06L8.94 10l-3.72 3.72a.75.75 0 101.06 1.06L10 11.06l3.72 3.72a.75.75 0 101.06-1.06L11.06 10l3.72-3.72a.75.75 0 00-1.06-1.06L10 8.94 6.28 5.22z" />
+                          </svg>
+                        <% end %>
+                      </div>
+                    </div>
+                  </div>
+
+                  <p class="mt-4 flex space-x-2 text-sm text-gray-700">
+                    <% if session[:cart]["#{product.id}"].to_i <= product.stock %>
+                      <svg class="h-5 w-5 flex-shrink-0 text-green-500" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+                        <path fill-rule="evenodd" d="M16.704 4.153a.75.75 0 01.143 1.052l-8 10.5a.75.75 0 01-1.127.075l-4.5-4.5a.75.75 0 011.06-1.06l3.894 3.893 7.48-9.817a.75.75 0 011.05-.143z" clip-rule="evenodd" />
+                      </svg>
+                      <span>In stock</span>
+                    <% else %>
+                      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5 text-red-600">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M9.75 9.75l4.5 4.5m0-4.5l-4.5 4.5M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                      </svg>
+                      <span>Out of stock</span>
+                    <% end %>
+                  </p>
+                </div>
+              </li>
+            <% end %>
+          <%else%>
+            <h1> Your cart is empty</h1>
+          <% end %>
+        </ul>
+      </section>
+
+      <section aria-labelledby="summary-heading" class="mt-16 rounded-lg bg-gray-50 px-4 py-6 sm:p-6 lg:col-span-5 lg:mt-0 lg:p-8">
+        <h2 id="summary-heading" class="text-lg font-medium text-gray-900">Order summary</h2>
+
+        <dl class="mt-6 space-y-4">
+          <div class="flex items-center justify-between">
+            <dt class="text-sm text-gray-600">Subtotal</dt>
+            <dd class="text-sm font-medium text-gray-900">$<%= @subtotal %></dd>
+          </div>
+          <div class="flex items-center justify-between border-t border-gray-200 pt-4">
+            <dt class="flex items-center text-sm text-gray-600">
+              <span>Shipping Tax</span>
+            </dt>
+            <dd class="text-sm font-medium text-gray-900">$<%= @shipping %></dd>
+          </div>
+
+          <% if session[:cart].present? %>
+            <div class="flex items-center justify-between border-t border-gray-200 pt-4">
+              <dt class="text-sm text-gray-600">Promo code</dt>
+              <dd class="flex">
+                  <%= form_tag my_cart_path, method: :get, class: "w-full" do %>
+                    <div class="<%=(session[:cart]["promo"].present?) ? " hidden" : ""%> flex items-center justify-between border-b border-gray-200 pb-4">
+                      <%= text_field_tag :promo_code, nil, class: "block w-full rounded-md border-gray-300 py-1.5 text-sm text-gray-900 focus:ring-orange-500 focus:border-orange-500 focus:outline-none", placeholder: "Enter promo code" %>
+                      <%= button_to my_cart_path, method: :get, class: "ml-2 px-3 py-1.5 rounded-md bg-orange-600 text-sm font-medium text-white shadow-sm hover:bg-orange-700 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-offset-2 focus:ring-offset-gray-50" do %>
+                        Apply
+                      <% end %>
+                    </div>
+                  <% end %>
+                  <dd class="<%=(session[:cart]["promo"].present?) ? "" : "hidden" %> text-sm font-medium text-gray-900">- $<%= session[:cart]["promo"] %></dd>
+              </dd>
+            </div>
+          <% end %>
+
+          <div class="flex items-center justify-between border-t border-gray-200 pt-4">
+            <dt class="text-base font-medium text-gray-900">Order total</dt>
+            <dd class="text-base font-medium text-gray-900">$<%= @total %></dd>
+          </div>
+        </dl>
+
+        <div class="mt-6">
+          <% if @checkout %>
+            <%= link_to new_order_path(subtotal: @subtotal, shipping: @shipping, total: @total), class: "text-center w-full block rounded-md border border-transparent bg-orange-600 px-4 py-3 text-base font-medium text-white shadow-sm hover:bg-orange-700 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-offset-2 focus:ring-offset-gray-50" do %>
+              Checkout
+            <% end %>
+          <% else %>
+            <button type="button" class="cursor-no-drop	w-full rounded-md border border-transparent bg-orange-200 px-4 py-3 text-base font-medium text-white shadow-sm"><%= session[:cart].nil? ? "Empty Cart" : "Out of Stock" %></button>
+          <% end %>
+        </div>
+      </section>
+      
+    </form>
+  </div>
+</div>
+
+<script>
+
+function handleChange(productId, newValue) {
+  var form = document.createElement('form');
+  form.method = 'POST';
+  form.action = '/update_cart_quantity';
+
+  // Adaugă tokenul CSRF
+  var csrfTokenInput = document.createElement('input');
+  csrfTokenInput.type = 'hidden';
+  csrfTokenInput.name = '<%= request_forgery_protection_token %>';
+  csrfTokenInput.value = '<%= form_authenticity_token %>';
+
+  var productIdInput = document.createElement('input');
+  productIdInput.type = 'hidden';
+  productIdInput.name = 'product_id';
+  productIdInput.value = productId;
+
+  var quantityInput = document.createElement('input');
+  quantityInput.type = 'hidden';
+  quantityInput.name = 'quantity';
+  quantityInput.value = newValue;
+
+  form.appendChild(csrfTokenInput); // Adaugă tokenul CSRF la formular
+  form.appendChild(productIdInput);
+  form.appendChild(quantityInput);
+
+  document.body.appendChild(form);
+  form.submit();
+}
+
+
+</script>

@@ -4,6 +4,7 @@ class CreateDiscount < ActiveRecord::Migration[7.0]
       t.string :code
       t.decimal :value
       t.integer :brand_id
+      t.date :expires_at
 
       t.timestamps
     end

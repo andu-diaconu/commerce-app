@@ -1,0 +1,121 @@
+<main class="bg-white px-4 pb-24 pt-16 sm:px-6 sm:pt-24 lg:px-8 lg:py-32 rounded-3xl">
+  <div class="mx-auto max-w-3xl">
+    <div class="max-w-xl">
+      <h1 class="text-base font-medium text-orange-600">Order <%=@order.id%></h1>
+      <p class="mt-2 text-4xl font-bold tracking-tight">The order has been processed!</p>
+
+      <dl class="mt-12 text-sm font-medium">
+        <dt class="text-gray-900">
+          Sold by <% @order.product_orders.each do |po| %>
+                      <b class="ml-1"><%=po.product.brand.name%>,</b>
+                  <% end %>
+        </dt>
+        <dd class="mt-2 text-orange-600">Their e-mails & websites are found on brands page</dd>
+      </dl>
+    </div>
+
+    <section aria-labelledby="order-heading" class="mt-10 border-t border-gray-200">
+
+      <% @order.product_orders.each do |po| %>
+        <div class="flex space-x-6 border-b border-gray-200 py-10">
+          <a href="<%= product_path(po.product) %>" class="h-40 w-40 flex-shrink-0">
+            <img src="<%= po.product.image.url %>" class="h-full w-full rounded-lg bg-gray-100 object-cover object-center">
+          </a>
+
+          <div class="flex flex-col flex-auto">
+            <div>
+              <h4 class="font-medium text-gray-900">
+                <%= po.product.name.split("|").join("<br/>").html_safe %>
+              </h4>
+            </div>
+            <div class="mt-6 flex flex-1 items-end">
+              <dl class="flex space-x-4 divide-x divide-gray-200 text-sm sm:space-x-6">
+                <div class="flex">
+                  <dt class="font-medium text-gray-900">Quantity</dt>
+                  <dd class="ml-2 text-gray-700"><%= po.quantity %></dd>
+                </div>
+                <div class="flex pl-4 sm:pl-6">
+                  <dt class="font-medium text-gray-900">Price</dt>
+                  <dd class="ml-2 text-gray-700"><%= po.price %></dd>
+                </div>
+              </dl>
+            </div>
+          </div>
+        </div>
+      <% end %>
+
+      <div class="sm:ml-40 sm:pl-6">
+
+        <dl class="grid grid-cols-2 gap-x-6 py-10 text-sm">
+          <div>
+            <dt class="font-medium text-gray-900">Shipping address</dt>
+            <dd class="mt-2 text-gray-700">
+              <address class="not-italic">
+                <span class="block"><%= @order.shipping_address.country %></span>
+                <span class="block"><%= @order.shipping_address.district %> - <%= @order.shipping_address.city %></span>
+                <span class="block"><%= @order.shipping_address.street %>, <%= @order.shipping_address.bl %></span>
+                <br/>
+                <span class="block"><%= @order.shipping_address.phone %></span>
+              </address>
+            </dd>
+          </div>
+          <div>
+            <dt class="font-medium text-gray-900">Billing address</dt>
+            <dd class="mt-2 text-gray-700">
+              <address class="not-italic">
+                <span class="block"><%= @order.billing_address.country %></span>
+                <span class="block"><%= @order.billing_address.district %> - <%= @order.billing_address.city %></span>
+                <span class="block"><%= @order.billing_address.street %>, <%= @order.billing_address.bl %></span>
+              </address>
+            </dd>
+          </div>
+        </dl>
+
+        <h4 class="sr-only">Payment</h4>
+        <dl class="grid grid-cols-2 gap-x-6 border-t border-gray-200 py-10 text-sm">
+          <div>
+            <dt class="font-medium text-gray-900">Payment method</dt>
+            <dd class="mt-2 text-gray-700">
+              <% if @order.payment_method == "Credit Card" %>
+                <p><%=@order.credit_card.card%></p>
+                <p><span aria-hidden="true">••••</span><%=@order.credit_card.number[-4..]%></p>
+              <% else %>
+                <p><%=@order.payment_method%></p>
+              <% end %>
+            </dd>
+          </div>
+          <div>
+            <dt class="font-medium text-gray-900">Shipping method</dt>
+            <dd class="mt-2 text-gray-700">
+              <p><%= @order.delivery_method %></p>
+            </dd>
+          </div>
+        </dl>
+
+
+        <dl class="space-y-6 border-t border-gray-200 pt-10 text-sm">
+          <div class="flex justify-between">
+            <dt class="font-medium text-gray-900">Subtotal</dt>
+            <dd class="text-gray-700">$<%= @order.subtotal%></dd>
+          </div>
+          <% if @order.discount.present? %>
+            <div class="flex justify-between">
+              <dt class="flex font-medium text-gray-900">
+                Discount
+              </dt>
+              <dd class="text-gray-700">-$ <%= @order.discount.value %></dd>
+            </div>
+          <% end %>
+          <div class="flex justify-between">
+            <dt class="font-medium text-gray-900">Shipping</dt>
+            <dd class="text-gray-700">$<%= @order.shipping_tax %></dd>
+          </div>
+          <div class="flex justify-between">
+            <dt class="font-medium text-gray-900">Total</dt>
+            <dd class="text-gray-900">$<%= @order.total %></dd>
+          </div>
+        </dl>
+      </div>
+    </section>
+  </div>
+</main>

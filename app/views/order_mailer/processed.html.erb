@@ -1,0 +1,24 @@
+<h1>Your order has been processed!</h1>
+<br/><br/>
+<p>
+  The products will be with you in a few days, as you choose: <b><%= @order.delivery_method %></b>
+  <br/><br/>
+  Will be delivered at
+  <br/><br/><br/>
+  <span class="text-italic">  
+    <%=@shipping.country%>,<br/>
+    <%=@shipping.district%> - <%= @shipping.city%>,<br/>
+    <%= @shipping.street%> - Building: <%= @shipping.bl %>
+  </span>
+  <br /><br />
+  Your contact phone is: <span class="underline"><%= @shipping.phone%></span>
+</p>
+
+<span class="text-gray-300"> 
+If you have any questions please feel free to contact brand's staff by visiting support chat in our app.
+</span>
+<br/><br/><br/>
+<a href="<%= @order.invoice.url %>">Download Invoice</a><br/>
+Thank you for your order!
+
+

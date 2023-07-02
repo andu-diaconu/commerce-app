@@ -39,6 +39,8 @@ class DeviseCreateUsers < ActiveRecord::Migration[7.0]
       t.integer :billing_address_id
       t.integer :credit_card_id
       t.integer :brand_id
+      t.string :identifier
+      t.string :image
       t.timestamps null: false
     end
 

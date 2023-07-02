@@ -1,0 +1,465 @@
+<div class="bg-white p-10 rounded-3xl">
+<form id="myForm" onsubmit="return validateForm()" action="/orders" method="post">
+  <input class="hidden" name="total" id="total" value="<%=params["total"]%>" />
+  <input class="hidden" name="subtotal" id="subtotal" value="<%=params["subtotal"]%>" />
+  <input class="hidden" name="shipping" id="shipping" value="<%=params["shipping"]%>" />
+  <input class="hidden" name="discount" id="discount" value="<%=params["discount"]%>" />
+
+  <div class="space-y-12">
+    <div class="grid grid-cols-1 gap-x-8 gap-y-10 border-b border-gray-900/10 pb-12 md:grid-cols-3">
+      <div>
+        <h2 class="text-base font-semibold leading-7 text-gray-900">Billing Address</h2>
+        <p class="mt-1 text-sm leading-6 text-gray-600">
+          This address will be printed on the invoice<br/><br/>
+          <% if current_user.present? %>
+            <% if current_user.billing_address.present? %>
+              <div class="flex text-sm text-gray-900">
+                <div class="mr-4">
+                  <label>
+                    <input id="newBillingOption" class="text-orange-600 billing-option" type="radio" name="billingOption" value="new" checked>
+                    New Billing Address
+                  </label>
+                </div>
+
+                <div>
+                  <label>
+                    <input id="existingBillingOption" class="text-orange-600 billing-option" type="radio" name="billingOption" value="existing">
+                    Your existing Billing Address
+                  </label>
+                </div>
+              </div>
+            <% end %>
+          <% end %>
+          <br/>
+          <span class="text-gray-400 text-xs">Please note that the invoice will be sent via email in PDF format</span>
+        </p>
+      </div>
+
+      <div id="new-billing" class="grid max-w-2xl grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6 md:col-span-2">
+        <div class="sm:col-span-3">
+          <label for="first-name" class="block text-sm font-medium leading-6 text-gray-900">First name</label>
+          <div class="mt-2">
+            <input type="text" required  name="first-name-billing" id="first-name-billing" class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-orange-600 sm:text-sm sm:leading-6">
+          </div>
+        </div>
+
+        <div class="sm:col-span-3">
+          <label for="last-name" class="block text-sm font-medium leading-6 text-gray-900">Last name</label>
+          <div class="mt-2">
+            <input type="text" required name="last-name-billing" id="last-name-billing" class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-orange-600 sm:text-sm sm:leading-6">
+          </div>
+        </div>
+
+        <div class="sm:col-span-4">
+          <label for="email" class="block text-sm font-medium leading-6 text-gray-900">Email address</label>
+          <div class="mt-2">
+            <input id="email-billing" required name="email-billing" type="email" class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-orange-600 sm:text-sm sm:leading-6">
+          </div>
+        </div>
+
+        <div class="sm:col-span-4">
+          <label for="phone" class="block text-sm font-medium leading-6 text-gray-900">Phone number</label>
+          <div class="mt-2">
+            <input id="phone-billing" required name="phone-billing" type="number" class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-orange-600 sm:text-sm sm:leading-6">
+          </div>
+        </div>
+
+        <div class="sm:col-span-3">
+          <label for="country" class="block text-sm font-medium leading-6 text-gray-900">Country</label>
+          <div class="mt-2">
+            <select id="country-billing" name="country-billing" class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-orange-600 sm:max-w-xs sm:text-sm sm:leading-6">
+              <option>Romania</option>
+              <option>United States</option>
+              <option>United Kingdom</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="col-span-full">
+          <label for="street-address" class="block text-sm font-medium leading-6 text-gray-900">Street address</label>
+          <div class="mt-2">
+            <input type="text" required name="street-billing" id="street-billing" class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-orange-600 sm:text-sm sm:leading-6">
+          </div>
+        </div>
+
+        <div class="sm:col-span-2 sm:col-start-1">
+          <label for="city" class="block text-sm font-medium leading-6 text-gray-900">City</label>
+          <div class="mt-2">
+            <input type="text" required  name="city-billing" id="city-billing" class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-orange-600 sm:text-sm sm:leading-6">
+          </div>
+        </div>
+
+        <div class="sm:col-span-2">
+          <label for="region" class="block text-sm font-medium leading-6 text-gray-900">District</label>
+          <div class="mt-2">
+            <input type="text" required name="district-billing" id="district-billing" class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-orange-600 sm:text-sm sm:leading-6">
+          </div>
+        </div>
+
+        <div class="sm:col-span-2">
+          <label for="postal-code" class="block text-sm font-medium leading-6 text-gray-900">Building No.</label>
+          <div class="mt-2">
+            <input type="text" required name="bl-billing" id="bl-billing" class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-orange-600 sm:text-sm sm:leading-6">
+          </div>
+        </div>
+
+      </div>  
+    </div>
+
+    <div class="grid grid-cols-1 gap-x-8 gap-y-10 border-b border-gray-900/10 pb-12 md:grid-cols-3">
+      <div>
+        <h2 class="text-base font-semibold leading-7 text-gray-900">Shipping Address</h2>
+        <p class="mt-1 text-sm leading-6 text-gray-600">
+          This address will be used to deliver the package <br/><br/>
+          <% if current_user.present? %>
+            <% if current_user.shipping_address.present? %>
+              <div class="flex text-sm text-gray-900">
+                <div class="mr-4">
+                  <label>
+                    <input id="newShippingOption" class="text-orange-600 shipping-option" type="radio" name="shippingOption" value="new" checked>
+                    New Shipping Address
+                  </label>
+                </div>
+
+                <div>
+                  <label>
+                    <input id="existingShippingOption" class="text-orange-600 shipping-option" type="radio" name="shippingOption" value="existing">
+                    Your existing Shipping Address
+                  </label>
+                </div>
+              </div>
+            <% end %>
+          <% end %>
+          <br/>
+        </p>
+      </div>
+
+      <div id="new-shipping" class="grid max-w-2xl grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6 md:col-span-2">
+
+        <div class="col-span-full">
+          <label for="shipping-method" class="block text-sm font-medium text-gray-900 mb-2">Shipping Method</label>
+          <select id="shipping-method" name="shipping-method" class="block w-full rounded-md border-gray-300 shadow-sm focus:ring-orange-500 focus:border-orange-500 sm:text-sm">
+            <option>Standard (5-6 days)</option>
+            <option>Express (3-4 days)</option>
+            <option>Urgent (1-2 days)</option>
+          </select>
+        </div>
+
+        <div class="sm:col-span-3">
+          <label for="first-name" class="block text-sm font-medium leading-6 text-gray-900">First name</label>
+          <div class="mt-2">
+            <input type="text" required  name="first-name-shipping" id="first-name-shipping" class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-orange-600 sm:text-sm sm:leading-6">
+          </div>
+        </div>
+
+        <div class="sm:col-span-3">
+          <label for="last-name" class="block text-sm font-medium leading-6 text-gray-900">Last name</label>
+          <div class="mt-2">
+            <input type="text" required name="last-name-shipping" id="last-name-shipping" class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-orange-600 sm:text-sm sm:leading-6">
+          </div>
+        </div>
+
+        <div class="sm:col-span-4">
+          <label for="email" class="block text-sm font-medium leading-6 text-gray-900">Email address</label>
+          <div class="mt-2">
+            <input id="email-shipping" required name="email-shipping" type="email" class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-orange-600 sm:text-sm sm:leading-6">
+          </div>
+        </div>
+
+        <div class="sm:col-span-4">
+          <label for="phone" class="block text-sm font-medium leading-6 text-gray-900">Phone number</label>
+          <div class="mt-2">
+            <input id="phone-shipping" required name="phone-shipping" type="number" class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-orange-600 sm:text-sm sm:leading-6">
+          </div>
+        </div>
+
+        <div class="sm:col-span-3">
+          <label for="country" class="block text-sm font-medium leading-6 text-gray-900">Country</label>
+          <div class="mt-2">
+            <select id="country-shipping" name="country-shipping" class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-orange-600 sm:max-w-xs sm:text-sm sm:leading-6">
+              <option>Romania</option>
+              <option>United States</option>
+              <option>United Kingdom</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="col-span-full">
+          <label for="street-address" class="block text-sm font-medium leading-6 text-gray-900">Street address</label>
+          <div class="mt-2">
+            <input type="text" required name="street-shipping" id="street-shipping" class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-orange-600 sm:text-sm sm:leading-6">
+          </div>
+        </div>
+
+        <div class="sm:col-span-2 sm:col-start-1">
+          <label for="city" class="block text-sm font-medium leading-6 text-gray-900">City</label>
+          <div class="mt-2">
+            <input type="text" required  name="city-shipping" id="city-shipping" class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-orange-600 sm:text-sm sm:leading-6">
+          </div>
+        </div>
+
+        <div class="sm:col-span-2">
+          <label for="region" class="block text-sm font-medium leading-6 text-gray-900">District</label>
+          <div class="mt-2">
+            <input type="text" required name="district-shipping" id="district-shipping" class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-orange-600 sm:text-sm sm:leading-6">
+          </div>
+        </div>
+
+        <div class="sm:col-span-2">
+          <label for="postal-code" class="block text-sm font-medium leading-6 text-gray-900">Building No.</label>
+          <div class="mt-2">
+            <input type="text" required name="bl-shipping" id="bl-shipping" class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-orange-600 sm:text-sm sm:leading-6">
+          </div>
+        </div>
+
+      </div>  
+    </div>
+
+    <div class="grid grid-cols-1 gap-x-8 gap-y-10 border-b border-gray-900/10 pb-12 md:grid-cols-3">
+      <div>
+        <h2 class="text-base font-semibold leading-7 text-gray-900">Payment</h2>
+        <p class="mt-1 text-sm leading-6 text-gray-600">
+         <% if current_user.present? %>
+              <div id="credit-card-options" class="flex text-sm text-gray-900 mt-4">
+                <% if current_user.credit_card.present? %>              
+                  <div class="mr-4">
+                    <label>
+                      <input id="newCreditOption" class="text-orange-600 credit-option" type="radio" name="creditOption" value="new" checked>
+                      New Credit Card
+                    </label>
+                  </div>
+
+                  <div>
+                    <label>
+                      <input id="existingCreditOption" class="text-orange-600 credit-option" type="radio" name="creditOption" value="existing">
+                      Your existing Credit Card
+                    </label>
+                  </div>
+                <% end %>
+              </div>
+          <% end %>
+        </p>
+      </div>
+
+      <div class="max-w-2xl space-y-10 md:col-span-2">
+        <div>
+          <label for="payment-method" class="block text-sm font-medium text-gray-900">Payment Method</label>
+          <select id="payment-method" name="payment-method" class="mt-4 block w-full rounded-md border-gray-300 shadow-sm focus:ring-orange-500 focus:border-orange-500 sm:text-sm" onchange="toggleCreditCardOptions()">
+            <option value="Credit Card">Credit Card</option>
+            <option value="Cash">Cash</option>
+          </select>
+        </div>
+
+        <div id="credit-card-form" class="mt-4">
+          <label for="cardholder-name" class="block mt-2 text-sm font-medium text-gray-900">Cardholder's Name</label>
+          <input type="text" id="cardholder-name" name="cardholder-name" class="block w-full rounded-md border-gray-300 shadow-sm focus:ring-orange-500 focus:border-orange-500 sm:text-sm">
+          <br/>
+          <label for="card-number" class="block text-sm font-medium text-gray-900">Card Number</label>
+          <input type="number" id="card-number" name="card-number" class="block w-full rounded-md border-gray-300 shadow-sm focus:ring-orange-500 focus:border-orange-500 sm:text-sm"/>
+          <br/>
+          <div class="mt-2">
+            <label for="expiration-month" class="block text-sm font-medium text-gray-900">Expiration Date</label>
+            <div class="flex space-x-2">
+              <select id="expiration-month" name="expiration-month" class="block w-1/2 rounded-md border-gray-300 shadow-sm focus:ring-orange-500 focus:border-orange-500 sm:text-sm">
+                <% ["01","02","03","04","05","06","07","08","09","10","11","12"].each do |month|%>
+                  <option value="<%=month%>"><%= month %></option>
+                <% end %>
+              </select>
+              <select id="expiration-year" name="expiration-year" class="block w-1/2 rounded-md border-gray-300 shadow-sm focus:ring-orange-500 focus:border-orange-500 sm:text-sm">
+                <option value="24">24</option>
+                <option value="25">25</option>
+                <option value="26">26</option>
+                <option value="27">27</option>
+                <option value="28">28</option>
+                <option value="29">29</option>
+                <option value="30">30</option>
+              </select>
+            </div>
+          </div>
+          <br/>
+
+          <label for="cvv" class="block mt-2 text-sm font-medium text-gray-900">CVV</label>
+          <input type="password" id="cvv" name="cvv" class="block w-full rounded-md border-gray-300 shadow-sm focus:ring-orange-500 focus:border-orange-500 sm:text-sm" minlength="3" maxlength="3" />
+          
+          <br/>
+          <div class="mt-2">
+            <label for="card-type" class="block text-sm font-medium text-gray-900">Card Type</label>
+            <select id="card-type" name="card-type" class="block w-full rounded-md border-gray-300 shadow-sm focus:ring-orange-500 focus:border-orange-500 sm:text-sm">
+              <option value="MasterCard">MasterCard</option>
+              <option value="Visa">Visa</option>
+              <option value="Revolut">Revolut</option>
+            </select>
+          </div>
+          <br/>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <div class="mt-6 flex items-center justify-end gap-x-6">
+    <button type="submit" class="rounded-md bg-orange-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-orange-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-orange-600">Proceed</button>
+  </div>
+</form>
+</div>
+
+
+<script>
+
+    var existingBillingOption = document.getElementById("existingBillingOption");
+
+    if(existingBillingOption){
+      existingBillingOption.addEventListener("change", function() {
+          if (this.checked) {
+            document.getElementById("first-name-billing").value = "<%= (current_user.billing_address.first_name rescue "") %>";
+            document.getElementById("last-name-billing").value = "<%= current_user.billing_address.last_name rescue "" %>";
+            document.getElementById("email-billing").value = "<%= current_user.billing_address.email rescue "" %>";
+            document.getElementById("phone-billing").value = "<%= current_user.billing_address.phone rescue "" %>";
+            document.getElementById("city-billing").value = "<%= current_user.billing_address.city rescue "" %>";
+            document.getElementById("district-billing").value = "<%= current_user.billing_address.district rescue "" %>";
+            document.getElementById("bl-billing").value = "<%= current_user.billing_address.bl rescue "" %>";
+            document.getElementById("country-billing").value = "<%= current_user.billing_address.country rescue "" %>";
+            document.getElementById("street-billing").value = "<%= current_user.billing_address.street rescue "" %>";
+
+          }
+      });
+    }
+
+    
+    var newBillingOption = document.getElementById("newBillingOption");
+    
+    if(newBillingOption){
+      newBillingOption.addEventListener("change", function() {
+        if (this.checked) {
+          document.getElementById("first-name-billing").value = "";
+          document.getElementById("last-name-billing").value = "";
+          document.getElementById("email-billing").value = "";
+          document.getElementById("phone-billing").value = "";
+          document.getElementById("city-billing").value = "";
+          document.getElementById("district-billing").value = "";
+          document.getElementById("bl-billing").value = "";
+          document.getElementById("country-billing").value = "";
+          document.getElementById("street-billing").value = "";
+
+        }
+      });
+    }
+
+
+    var existingShippingOption = document.getElementById("existingShippingOption");
+
+    if(existingShippingOption){
+      existingShippingOption.addEventListener("change", function() {
+        if (this.checked) {
+          document.getElementById("first-name-shipping").value = "<%= current_user.shipping_address.first_name rescue "" %>";
+          document.getElementById("last-name-shipping").value = "<%= current_user.shipping_address.last_name rescue "" %>";
+          document.getElementById("email-shipping").value = "<%= current_user.shipping_address.email rescue "" %>";
+          document.getElementById("phone-shipping").value = "<%= current_user.shipping_address.phone rescue "" %>";
+          document.getElementById("city-shipping").value = "<%= current_user.shipping_address.city rescue "" %>";
+          document.getElementById("district-shipping").value = "<%= current_user.shipping_address.district rescue "" %>";
+          document.getElementById("bl-shipping").value = "<%= current_user.shipping_address.bl rescue "" %>";
+          document.getElementById("country-shipping").value = "<%= current_user.shipping_address.country rescue "" %>";
+          document.getElementById("street-shipping").value = "<%= current_user.shipping_address.street rescue "" %>";
+
+        }
+      });
+    }
+
+    
+    var newShippingOption = document.getElementById("newShippingOption");
+    
+    if(newShippingOption){
+      newShippingOption.addEventListener("change", function() {
+        if (this.checked) {
+          document.getElementById("first-name-shipping").value = "";
+          document.getElementById("last-name-shipping").value = "";
+          document.getElementById("email-shipping").value = "";
+          document.getElementById("phone-shipping").value = "";
+          document.getElementById("city-shipping").value = "";
+          document.getElementById("district-shipping").value = "";
+          document.getElementById("bl-shipping").value = "";
+          document.getElementById("country-shipping").value = "";
+          document.getElementById("street-shipping").value = "";
+
+        }
+      });
+    }
+
+
+  function toggleCreditCardOptions() {
+    var paymentMethodSelect = document.getElementById("payment-method");
+    var creditCardOptionsDiv = document.getElementById("credit-card-options");
+    var creditCardForm = document.getElementById("credit-card-form");
+
+    if (paymentMethodSelect.value === "Credit Card") {
+      if(creditCardOptionsDiv)
+        creditCardOptionsDiv.style.display = "block";
+      creditCardForm.style.display = "block";
+    } else {
+      if(creditCardOptionsDiv)
+        creditCardOptionsDiv.style.display = "none";
+      creditCardForm.style.display = "none";
+    }
+  }
+
+  function validateForm() {
+    var payment = document.getElementById("payment-method").value
+
+    var emailFields = document.querySelectorAll('input[type="email"]');
+    var emailRegex = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
+
+    for (var i = 0; i < emailFields.length; i++) {
+      var emailField = emailFields[i];
+      var emailValue = emailField.value;
+
+      if (!emailRegex.test(emailValue)) {
+        alert("Please enter a valid email address.");
+        emailField.focus();
+        return false;
+      }
+    }
+
+    if (payment == "Credit Card"){
+      var cvvInput = document.getElementById("cvv");
+      var cvvValue = cvvInput.value;
+
+      if (document.getElementById("cardholder-name").value === "" || document.getElementById("card-number").value === "" || document.getElementById("expiration-month").value === "" || document.getElementById("expiration-year").value === "" || document.getElementById("cvv").value === "" || document.getElementById("card-type").value === "" || cvvValue.length !== 3) {
+        alert("Invalid information for Credit Card");
+        return false;
+      }
+
+      return true;
+    }
+  }
+
+    var existingCreditOption = document.getElementById("existingCreditOption");
+
+    if(existingCreditOption){
+      existingCreditOption.addEventListener("change", function() {
+        if (this.checked) {
+          document.getElementById("cardholder-name").value = "<%= current_user.credit_card.owner rescue "" %>";
+          document.getElementById("card-number").value = "<%= current_user.credit_card.number rescue "" %>";
+          document.getElementById("expiration-month").value = "<%= current_user.credit_card.month rescue "" %>";
+          document.getElementById("expiration-year").value = "<%= current_user.credit_card.year rescue "" %>";
+          document.getElementById("cvv").value = "<%= current_user.credit_card.cvv rescue "" %>";
+          document.getElementById("card-type").value = "<%= current_user.credit_card.card rescue "" %>";
+        }
+      });
+    }
+
+    
+    var newCreditOption = document.getElementById("newCreditOption");
+
+    if(newCreditOption){
+      newCreditOption.addEventListener("change", function() {
+        if (this.checked) {
+          document.getElementById("cardholder-name").value = "";
+          document.getElementById("card-number").value = "";
+          document.getElementById("expiration-month").value = "";
+          document.getElementById("expiration-year").value = "";
+          document.getElementById("cvv").value = "";
+          document.getElementById("card-type").value = "";
+        }
+      });
+    }
+</script>

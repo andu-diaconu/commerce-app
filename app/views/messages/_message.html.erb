@@ -1,0 +1,25 @@
+<span class="<%=message.user.role == "Staff" ? "font-bold ml-2" : "ml-4"%> text-gray-700 text-xs hidethis-<%=message.user.id%>"> 
+  <%if message.user.role == "Staff" %>
+      STAFF &nbsp;&check;
+  <% else %>
+    <%= message.user.full_name %>
+  <% end %>
+</span>
+<div class="flex justify-start mb-1.5 side-<%=message.user.id%>">
+  <% if message.user.role == "Staff" %>
+    <img
+      src=<%= ( "https://adshopping.s3.eu-north-1.amazonaws.com/uploads/brands/#{message.user.brand.id}.jpg" || "https://adshopping.s3.eu-north-1.amazonaws.com/uploads/users/unkown/unknown.jpg") %>
+      class="object-cover h-12 w-12 rounded-full hidethis-<%=message.user.id%>" />
+  <% else %>
+    <img
+      src=<%= message.user.image.url || "https://adshopping.s3.eu-north-1.amazonaws.com/uploads/users/unkown/unknown.jpg" %>
+      class="object-cover h-12 w-12 rounded-full hidethis-<%=message.user.id%>" />
+  <% end %>
+
+  <div class="ml-2  <%=message.user.role == "Staff" ? "bg-blue-400" : "bg-gray-400" %> py-3 px-4 rounded-br-3xl rounded-tr-3xl rounded-tl-xl text-white bgc-<%=message.user.id%>">
+    <%= message.content %>
+  </div>
+</div>
+<span class="flex text-gray-400 text-xs mb-4 ml-4 side-<%=message.user.id%>">
+  <%= message.created_at.strftime('%e %b, %H:%M')%>
+</span>

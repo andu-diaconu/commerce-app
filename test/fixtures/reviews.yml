@@ -1,0 +1,17 @@
+review1:
+  title: "Test Review 1"
+  message: "This is the first test review."
+  user_id: 1
+  product_id: 1
+
+review2:
+  title: "Test Review 2"
+  message: "This is the second test review."
+  user_id: 2
+  product_id: 2
+
+review3:
+  title: "Test Review 3"
+  message: "This is the third test review."
+  user_id: 1
+  product_id: 2
