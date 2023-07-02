@@ -1,0 +1,60 @@
+<div class="hidden relative z-10" aria-labelledby="modal-title" role="dialog" aria-modal="true" id="add_user_modal">
+  <div class="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity"></div>
+
+  <div class="fixed inset-0 z-10 overflow-y-auto">
+    <div class="flex min-h-full items-end justify-center p-4 text-center sm:items-center sm:p-0">
+      <div class="relative transform overflow-hidden rounded-lg bg-black px-4 pb-4 pt-5 text-left shadow-xl transition-all sm:my-8 sm:w-full sm:max-w-3xl sm:p-6 dark:bg-gray-800">
+        <div>
+          <form id="form-id" action="/create_staff" method="post">
+            <div class="mb-4">
+              <label for="first-name" class="block text-white text-sm font-medium mb-1">First Name</label>
+              <input type="text" required id="first-name" name="first-name" class="w-full py-2 bg-gray-700 border border-gray-600 rounded-md text-white focus:outline-none focus:border-orange-500"/>
+            </div>
+
+            <div class="mb-4">
+              <label for="last-name" class="block text-white text-sm font-medium mb-1">Last Name</label>
+              <input id="last-name" required name="last-name" class="w-full py-2 bg-gray-700 border border-gray-600 rounded-md text-white focus:outline-none focus:border-orange-500 "/>
+            </div>
+
+            <div class="mb-4">
+              <label for="email" class="block text-white text-sm font-medium mb-1">Email</label>
+              <input id="email" name="email" class="w-full py-2 bg-gray-700 border border-gray-600 rounded-md text-white focus:outline-none focus:border-orange-500 " type="email" />
+            </div>
+
+            <div class="mb-4">
+              <label for="password" class="block text-white text-sm font-medium mb-1">Password</label>
+              <input id="password" type="password" required name="password" class="w-full py-2 bg-gray-700 border border-gray-600 rounded-md text-white focus:outline-none focus:border-orange-500 "/>
+            </div>
+
+            <% if object.nil? %>
+              <div class="mb-4">
+                <label for="brand_id" class="block text-white text-sm font-medium mb-1">Brand</label>
+                <select name="brand_id">
+                  <% Brand.all.each do |brand| %>
+                    <option value="<%= brand.id %>"><%= brand.name %></option>
+                  <% end %>
+                </select>
+              </div>
+              <% else %>
+                <input class="hidden" id="current_brand" name="current_brand" value="<%=object%>"/>
+            <% end %>
+
+
+            <div class="mt-4 flex justify-end">
+              <button onclick="close_modal()" type="button"  class="bg-gray-400 hover:bg-gray-600 text-white py-2 px-4 rounded-md mr-2">Cancel</button>
+              <button type="submit" class="bg-orange-500 hover:bg-orange-600 text-white py-2 px-4 rounded-md">Create</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+
+<script>
+  function close_modal() {
+    document.getElementById(`add_user_modal`).style.display = "none";
+  }
+</script>

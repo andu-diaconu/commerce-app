@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2023_04_30_215818) do
+ActiveRecord::Schema[7.0].define(version: 2023_06_24_004931) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -24,19 +24,32 @@ ActiveRecord::Schema[7.0].define(version: 2023_04_30_215818) do
     t.integer "user_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.string "first_name", default: ""
+    t.string "last_name", default: ""
+    t.string "email", default: ""
+    t.string "phone", default: ""
   end
 
   create_table "brands", force: :cascade do |t|
     t.string "name", default: "", null: false
     t.string "website"
     t.string "email"
+    t.string "logo"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.boolean "hidden", default: false
   end
 
   create_table "carts", force: :cascade do |t|
     t.string "status"
     t.integer "user_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  create_table "categories", force: :cascade do |t|
+    t.string "name"
+    t.string "label_name", default: ""
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end
@@ -53,92 +66,25 @@ ActiveRecord::Schema[7.0].define(version: 2023_04_30_215818) do
     t.datetime "updated_at", null: false
   end
 
+  create_table "customers", force: :cascade do |t|
+    t.integer "user_id"
+    t.integer "product_id"
+    t.boolean "done", default: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
   create_table "discounts", force: :cascade do |t|
     t.string "code"
     t.decimal "value"
     t.integer "brand_id"
+    t.date "expires_at"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end
 
-  create_table "electronic_functions", force: :cascade do |t|
-    t.integer "electronic_id"
-    t.integer "function_id"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-  end
-
-  create_table "electronic_sensors", force: :cascade do |t|
-    t.integer "electronic_id"
-    t.integer "sensor_id"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-  end
-
-  create_table "electronics", force: :cascade do |t|
-    t.string "processor"
-    t.float "processor_frequency"
-    t.string "video_card"
-    t.float "screen_size"
-    t.string "os"
-    t.string "battery"
-    t.float "weight"
-    t.string "memory_type"
-    t.integer "memory"
-    t.float "refresh_rate"
-    t.string "web_camera"
-    t.string "audio"
-    t.integer "category"
-    t.string "production_year"
-    t.integer "product_id"
-    t.bigint "electronic_function_id"
-    t.bigint "electronic_sensor_id"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.index ["electronic_function_id"], name: "index_electronics_on_electronic_function_id"
-    t.index ["electronic_sensor_id"], name: "index_electronics_on_electronic_sensor_id"
-  end
-
-  create_table "entertainment_functions", force: :cascade do |t|
-    t.integer "entertainment_id"
-    t.integer "function_id"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-  end
-
-  create_table "entertainment_packages", force: :cascade do |t|
-    t.integer "entertainment_id"
-    t.integer "package_id"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-  end
-
-  create_table "entertainments", force: :cascade do |t|
-    t.string "memory"
-    t.string "edition"
-    t.integer "controllers"
-    t.float "weight"
-    t.string "production_year"
-    t.integer "category"
-    t.integer "product_id"
-    t.bigint "entertainment_function_id"
-    t.bigint "entertainment_package_id"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.index ["entertainment_function_id"], name: "index_entertainments_on_entertainment_function_id"
-    t.index ["entertainment_package_id"], name: "index_entertainments_on_entertainment_package_id"
-  end
-
-  create_table "fashions", force: :cascade do |t|
-    t.string "size"
-    t.string "sex"
-    t.string "season"
-    t.string "model"
-    t.string "material"
-    t.string "close_system"
-    t.string "style"
-    t.integer "category"
-    t.integer "product_id"
+  create_table "encoded_users", force: :cascade do |t|
+    t.text "value"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end
@@ -150,29 +96,14 @@ ActiveRecord::Schema[7.0].define(version: 2023_04_30_215818) do
     t.datetime "updated_at", null: false
   end
 
-  create_table "feedbacks", force: :cascade do |t|
-    t.integer "user_id"
-    t.integer "product_id"
-    t.string "message"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-  end
-
-  create_table "functions", force: :cascade do |t|
-    t.string "name", default: "", null: false
-    t.text "description"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-  end
-
   create_table "messages", force: :cascade do |t|
-    t.bigint "sender_id"
-    t.bigint "receiver_id"
     t.text "content", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.index ["receiver_id"], name: "index_messages_on_receiver_id"
-    t.index ["sender_id"], name: "index_messages_on_sender_id"
+    t.bigint "user_id"
+    t.bigint "room_id"
+    t.index ["room_id"], name: "index_messages_on_room_id"
+    t.index ["user_id"], name: "index_messages_on_user_id"
   end
 
   create_table "orders", force: :cascade do |t|
@@ -188,19 +119,20 @@ ActiveRecord::Schema[7.0].define(version: 2023_04_30_215818) do
     t.integer "credit_card_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-  end
-
-  create_table "packages", force: :cascade do |t|
-    t.string "name", default: "", null: false
-    t.string "description"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
+    t.string "invoice", default: ""
   end
 
   create_table "product_carts", force: :cascade do |t|
     t.integer "cart_id"
     t.integer "product_id"
     t.integer "quantity"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  create_table "product_categories", force: :cascade do |t|
+    t.integer "product_id"
+    t.integer "category_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end
@@ -215,19 +147,36 @@ ActiveRecord::Schema[7.0].define(version: 2023_04_30_215818) do
   end
 
   create_table "products", force: :cascade do |t|
-    t.string "name", default: "", null: false
-    t.text "description"
+    t.text "name", default: "", null: false
+    t.text "description", default: ""
+    t.string "label_name", default: ""
     t.decimal "price", default: "10.0", null: false
     t.integer "stock", default: 10, null: false
-    t.string "colour"
+    t.decimal "rating", default: "0.0"
+    t.integer "rating_count", default: 0
     t.integer "brand_id"
+    t.string "identifier", null: false
+    t.string "image"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.boolean "hidden", default: false
+    t.float "rating_sum"
+  end
+
+  create_table "reviews", force: :cascade do |t|
+    t.integer "user_id"
+    t.integer "product_id"
+    t.string "title", default: ""
+    t.text "message", default: ""
+    t.string "user_identifier"
+    t.string "identifier", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end
 
-  create_table "sensors", force: :cascade do |t|
-    t.string "name", default: "", null: false
-    t.text "description"
+  create_table "rooms", force: :cascade do |t|
+    t.string "name"
+    t.boolean "is_private", default: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end
@@ -240,6 +189,18 @@ ActiveRecord::Schema[7.0].define(version: 2023_04_30_215818) do
     t.string "bl"
     t.string "apartament"
     t.integer "user_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.string "first_name", default: ""
+    t.string "last_name", default: ""
+    t.string "email", default: ""
+    t.string "phone", default: ""
+  end
+
+  create_table "user_ratings", force: :cascade do |t|
+    t.integer "user_id"
+    t.integer "product_id"
+    t.integer "value"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end
@@ -257,6 +218,8 @@ ActiveRecord::Schema[7.0].define(version: 2023_04_30_215818) do
     t.integer "billing_address_id"
     t.integer "credit_card_id"
     t.integer "brand_id"
+    t.string "identifier"
+    t.string "image"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["email"], name: "index_users_on_email", unique: true
@@ -267,19 +230,10 @@ ActiveRecord::Schema[7.0].define(version: 2023_04_30_215818) do
   add_foreign_key "carts", "users"
   add_foreign_key "credit_cards", "users"
   add_foreign_key "discounts", "brands"
-  add_foreign_key "electronics", "electronic_functions"
-  add_foreign_key "electronics", "electronic_sensors"
-  add_foreign_key "electronics", "products"
-  add_foreign_key "entertainments", "entertainment_functions"
-  add_foreign_key "entertainments", "entertainment_packages"
-  add_foreign_key "entertainments", "products"
-  add_foreign_key "fashions", "products"
   add_foreign_key "favorites", "products"
   add_foreign_key "favorites", "users"
-  add_foreign_key "feedbacks", "products"
-  add_foreign_key "feedbacks", "users"
-  add_foreign_key "messages", "users", column: "receiver_id"
-  add_foreign_key "messages", "users", column: "sender_id"
+  add_foreign_key "messages", "rooms"
+  add_foreign_key "messages", "users"
   add_foreign_key "orders", "billing_addresses"
   add_foreign_key "orders", "credit_cards"
   add_foreign_key "orders", "shipping_addresses"
@@ -289,6 +243,8 @@ ActiveRecord::Schema[7.0].define(version: 2023_04_30_215818) do
   add_foreign_key "product_orders", "orders"
   add_foreign_key "product_orders", "products"
   add_foreign_key "products", "brands"
+  add_foreign_key "reviews", "products"
+  add_foreign_key "reviews", "users"
   add_foreign_key "shipping_addresses", "users"
   add_foreign_key "users", "brands"
 end

@@ -1,0 +1,96 @@
+<div class="bg-white rounded-3xl py-4 px-4 sm:px-6 lg:px-8 h-auto min-h-full">
+  <div class="sm:flex sm:items-center">
+    <div class="sm:flex-auto">
+      <h1 class="text-xl font-semibold text-gray-900">Users</h1>
+    </div>
+    <div class="flex mt-4 justify-between">
+      <div class="py-3 flex items-center justify-between">
+        <div class="flex items-center">
+          <h1 class="ml-4 text-white font-bold">Products Page</h1>
+        </div>
+        <div class="flex-1 flex justify-end sm:hidden">
+          <a href="#" class="relative inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50">Previous</a>
+          <a href="#" class="ml-3 relative inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50">Next</a>
+        </div>
+        <div class="hidden sm:flex-1 sm:flex sm:items-center sm:justify-end">
+          <div class="digg_pagination">
+            <%== pagy_nav(@pagy) %>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="flex justify-end mt-4">
+    <% if current_user.present? && current_user.role == "Admin" %>
+      <button onclick="add_user()" type="button" class="rounded-lg bg-orange-600 hover:bg-orange-700 text-white px-3 py-1 mx-4 sm:mx-6 md:mx-8">New User</button>
+    <% end %>
+  </div>
+
+  <div class="flex justify-center mt-4">
+    <div class="relative">
+      <input id="search-input" value="<%= params[:search] %>" type="text" placeholder="Search" class="w-40 sm:w-auto pr-8 py-2 border-b border-orange-500 rounded-md text-sm text-gray-900 focus:outline-none focus:ring-orange-500 focus:border-orange-500">
+      <div class="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5 text-orange-500">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 15.75l-2.489-2.489m0 0a3.375 3.375 0 10-4.773-4.773 3.375 3.375 0 004.774 4.774zM21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+        </svg>
+      </div>
+    </div>
+  </div>
+  <div class="mt-8 flex flex-col">
+    <div class="-my-2 -mx-4 overflow-x-auto sm:-mx-6 lg:-mx-8">
+      <div class="inline-block min-w-full py-2 align-middle md:px-6 lg:px-8">
+        <div class="overflow-hidden shadow ring-1 ring-black ring-opacity-5 md:rounded-lg">
+          <table class="min-w-full divide-y divide-gray-300">
+            <thead class="bg-gray-50">
+              <tr>
+                <th scope="col" class="py-3.5 pl-4 pr-3 text-left text-sm font-semibold text-gray-900 sm:pl-6">First Name</th>
+                <th scope="col" class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">Last Name</th>
+                <th scope="col" class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">Email</th>
+                <th scope="col" class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">Brand</th>
+                <th scope="col" class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">Activity</th>
+                <th scope="col" class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900 pl-5"></th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-gray-200 bg-white">
+            <% @users.each do |user| %>
+              <tr>
+                <td class="whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium text-gray-900 sm:pl-6"><%= user.first_name %><br/></td>
+                <td class="whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium text-gray-900 sm:pl-6"><%= user.last_name %><br/></td>
+                <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500"><%= user.email %><br/></td>
+                <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500"><%= user.brand.name %><br/></td>
+                <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500">Send <b><%= user.messages.count %></b> messages<br/></td>
+                <td class="pl-4 text-center whitespace-nowrap py-4 text-sm text-gray-500 inline-flex">
+                  <%= button_to user_path(user), method: :delete, form: {data: {turbo_confirm: 'Are you sure?'}}, class: "text-red-600 hover:text-red-900 text-sm font-medium" do %>
+                    Remove
+                  <% end %>
+                </td>
+              </tr>
+            <% end %>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <%= render "new", object: nil %>
+</div>
+
+<script>
+
+  document.getElementById("search-input").addEventListener("keydown", function(event) {
+    if (event.keyCode === 13) {
+      event.preventDefault();
+      var searchValue = this.value.trim();
+      if (searchValue !== "") {
+        var currentUrl = window.location.href;
+        var updatedUrl = currentUrl + (currentUrl.includes("?") ? "&" : "?") + "search=" + encodeURIComponent(searchValue);
+        window.location.href = updatedUrl;
+      }
+    }
+  });
+  
+  function add_user(){
+    document.getElementById("add_user_modal").style.display = "block";
+  }
+</script>

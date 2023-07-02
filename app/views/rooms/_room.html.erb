@@ -1,0 +1,13 @@
+<div class="flex flex-row py-4 px-2 justify-center items-center border-b-2 <%= (@single_room.present? && @single_room.name == room.name) ? "bg-zinc-300" : ""%>  ">
+  <div class="w-1/4">
+    <% brand = Brand.find_by(name: room.name) %>
+    <img
+      src="<%= ("https://adshopping.s3.eu-north-1.amazonaws.com/uploads/brands/#{brand.id}.jpg" rescue "https://adshopping.s3.eu-north-1.amazonaws.com/uploads/users/unkown/unknown.jpg") %>"
+      class="object-cover h-12 w-12 rounded-full"
+      alt=""
+    />
+  </div>
+  <div class="w-full">
+    <div class="ml-2 text-lg font-semibold"><%= link_to room.name, room %></div>
+  </div>
+</div>

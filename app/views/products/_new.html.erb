@@ -1,0 +1,90 @@
+<div class="hidden relative z-10" aria-labelledby="modal-title" role="dialog" aria-modal="true" id="add_product_modal">
+  <div class="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity"></div>
+
+  <div class="fixed inset-0 z-10 overflow-y-auto">
+    <div class="flex min-h-full items-end justify-center p-4 text-center sm:items-center sm:p-0">
+      <div class="relative transform overflow-hidden rounded-lg bg-black px-4 pb-4 pt-5 text-left shadow-xl transition-all sm:my-8 sm:w-full sm:max-w-3xl sm:p-6 dark:bg-gray-800">
+        <div>
+          <form id="form-id" action="/products" method="post" enctype="multipart/form-data" >
+            <div class="mb-4">
+              <label for="name" class="block text-white text-sm font-medium mb-1">Name</label>
+              <textarea type="text" required id="name" name="name" class="w-full py-2 bg-gray-700 border border-gray-600 rounded-md text-white focus:outline-none focus:border-orange-500" rows="3" cols="50"></textarea>
+            </div>
+
+            <div class="mb-4">
+              <label for="description" class="block text-white text-sm font-medium mb-1">Description</label>
+              <textarea id="description" name="description" class="w-full py-2 bg-gray-700 border border-gray-600 rounded-md text-white focus:outline-none focus:border-orange-500 resize-y h-40" rows="7" cols="50"></textarea>
+            </div>
+
+            <div class="flex justify-center justify-between mt-4">
+              <div>
+                <label for="price" class="block text-white font-medium mb-1 text-center">Price</label>
+                <div class="mb-4 flex justify-center">
+                  <button type="button" class="mr-2 px-3 py-2 bg-gray-400 border border-gray-600 rounded-md text-white focus:outline-none focus:border-orange-500" onclick="changePrice(-0.5)">-</button>
+                  <input type="number" required id="price" value="0" name="price" class="w-1/3 px-3 py-2 bg-gray-700 border border-gray-600 rounded-md text-white focus:outline-none focus:border-orange-500 text-center">
+                  <button type="button" class="ml-2 px-3 py-2 bg-orange-500 border border-gray-600 rounded-md text-white focus:outline-none focus:border-orange-500" onclick="changePrice(0.5)">+</button>
+                </div>
+              </div>
+              <div>
+                <label for="stock" class="block text-white font-medium mb-1 text-center">Stock</label>
+                <div class="mb-4 flex justify-center">
+                  <button type="button" class="mr-2 px-3 py-2 bg-gray-400 border border-gray-600 rounded-md text-white focus:outline-none focus:border-orange-500" onclick="decrementStock()">-</button>
+                  <input type="number" required id="stock" value="0" name="stock" class="w-1/3 px-3 py-2 bg-gray-700 border border-gray-600 rounded-md text-white focus:outline-none focus:border-orange-500 text-center">
+                  <button type="button" class="ml-2 px-3 py-2 bg-orange-500 border border-gray-600 rounded-md text-white focus:outline-none focus:border-orange-500" onclick="incrementStock()">+</button>
+                </div>
+              </div>
+            </div>
+
+
+            <div class="mb-4 text-center justify-center">
+              <label for="upload-image" id="upload-image-label" class="rounded-md bg-white px-2.5 py-1.5 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50 cursor-pointer">Choose Image</label>
+              <input id="upload-image" required name="upload-image" type="file" class="hidden" accept="image/*" onchange="displayFileName(this)">
+            </div>
+
+
+
+            <div class="mt-4 flex justify-end">
+              <button onclick="exit_this_modal()" type="button"  class="bg-gray-400 hover:bg-gray-600 text-white py-2 px-4 rounded-md mr-2">Cancel</button>
+              <button type="submit" class="bg-orange-500 hover:bg-orange-600 text-white py-2 px-4 rounded-md">Create</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+
+<script>
+  function exit_this_modal() {
+    document.getElementById(`add_product_modal`).style.display = "none";
+  }
+
+  function displayFileName(input) {
+    const fileNameLabel = document.querySelector('#upload-image-label');
+    if (input.files.length > 0) {
+      fileNameLabel.textContent = input.files[0].name;
+    } else {
+      fileNameLabel.textContent = 'Change';
+    }
+  }
+
+  function incrementStock() {
+    const stockInput = document.getElementById('stock');
+    stockInput.stepUp();
+  }
+
+  function decrementStock() {
+    const stockInput = document.getElementById('stock');
+    stockInput.stepDown();
+  }
+
+  function changePrice(amount) {
+    var priceInput = document.getElementById('price');
+    var currentPrice = parseFloat(priceInput.value);
+    var newPrice = currentPrice + amount;
+    priceInput.value = newPrice.toFixed(2);
+  }
+  
+</script>

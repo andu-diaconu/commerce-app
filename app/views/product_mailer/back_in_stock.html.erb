@@ -1,0 +1,20 @@
+<h1>GREAT NEWS <%=@user.full_name%></h1>
+<br/><br/>
+<p>
+  We are happy to announce you that the product you wish is back in Stock
+  <br/><br/>
+  It's about <b><%= @product.name%></b><br/>
+  The stock is count to <b><%= @product.stock %></b> now, and it is only <b>$<%=@product.price%></b>
+  <br/><br/><br/>
+  <span class="text-italic">  
+    Hurry up!<br/>
+    <%= link_to "Click here to go straight to the product", product_url(@product), class: "underline text-blue-600" %>
+  </span>
+  <br /><br />
+</p>
+
+<span class="text-gray-300"> 
+If you have any questions please feel free to contact brand's staff by visiting support chat in our app.
+</span>
+
+

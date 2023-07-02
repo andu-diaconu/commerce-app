@@ -1,0 +1,127 @@
+<div class="pt-20 h-screen bg-white rounded-3xl">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 md:px-8">
+    <h1 class="text-2xl font-semibold text-gray-900"><%= @brand.persisted? ? "Edit" : "New" %> Brand</h1>
+  </div>
+  <% if @brand.persisted? %>
+    <div class="flex justify-end">
+      <button onclick="add_user()" type="button" class="rounded-lg bg-orange-600 hover:bg-orange-700 text-white px-3 py-1 mx-4 sm:mx-6 md:mx-8">Add User Staff</button>
+    </div>
+  <% end %>
+  
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 md:px-8 mt-4">
+    <%= form_for @brand, html: {class: "space-y-8 divide-y divide-gray-200"} do |f| %>
+      <div class="space-y-8 divide-y divide-gray-200 sm:space-y-5">
+        <div class="sm:grid sm:grid-cols-3 sm:gap-4 sm:items-start sm:pt-5">
+          <label for="offer" class="block text-sm font-medium text-gray-700 sm:mt-px sm:pt-2">
+            Name
+          </label>
+          <div class="mt-1 sm:mt-0 sm:col-span-2">
+            <%= f.text_field :name, required: true, class: "max-w-lg block focus:ring-orange-500 focus:border-orange-500 w-full shadow-sm sm:max-w-xs sm:text-sm border-gray-300 rounded-md" %>
+          </div>
+        </div>
+        
+        <div class="sm:grid sm:grid-cols-3 sm:gap-4 sm:items-start sm:border-t sm:border-gray-200 sm:pt-5">
+          <label for="offer" class="block text-sm font-medium text-gray-700 sm:mt-px sm:pt-2">
+            Website
+          </label>
+          <div class="mt-1 sm:mt-0 sm:col-span-2">
+            <%= f.text_field :website, required: true, class: "max-w-lg block focus:ring-orange-500 focus:border-orange-500 w-full shadow-sm sm:max-w-xs sm:text-sm border-gray-300 rounded-md" %>
+          </div>
+        </div>
+
+        <div class="sm:grid sm:grid-cols-3 sm:gap-4 sm:items-start sm:border-t sm:border-gray-200 sm:pt-5">
+          <label for="offer" class="block text-sm font-medium text-gray-700 sm:mt-px sm:pt-2">
+            Email
+          </label>
+          <div class="mt-1 sm:mt-0 sm:col-span-2">
+            <%= f.text_field :email, required: true, class: "max-w-lg block focus:ring-orange-500 focus:border-orange-500 w-full shadow-sm sm:max-w-xs sm:text-sm border-gray-300 rounded-md" %>
+          </div>
+        </div>
+
+        <% if @brand.persisted? %>
+          <div class="mt-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:items-start sm:border-t sm:border-gray-200 sm:pt-5">
+            <label for="offer" class="block text-sm font-medium text-gray-700 sm:mt-px sm:pt-2">
+              Users
+            </label>
+            <ul>
+              <% if @brand.persisted? %>
+                <% @brand.users.each do |user| %>
+                  <li>
+                    <h3 class="mt-1 text-sm font-semibold leading-7 tracking-tight text-gray-900 flex">
+                      <%= user.full_name %>
+                      <button type="button" onclick="confirmDelete(<%= user.id %>)" class="text-red-600 ml-2"> 
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="pt-0.5 w-4 h-4">
+                          <path stroke-linecap="round" stroke-linejoin="round" d="M9.75 9.75l4.5 4.5m0-4.5l-4.5 4.5M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                        </svg>
+                      </button>
+                    </h3>
+                  </li>
+                <% end %>
+              <% end %>
+            </ul>
+          </div>
+        <% end %>
+
+        <div class="sm:grid sm:grid-cols-3 sm:gap-4 sm:items-start sm:border-t sm:border-gray-200 sm:pt-5">
+          <label for="offer" class="block text-sm font-medium text-gray-700 sm:mt-px sm:pt-2">
+            Logo image
+          </label>
+          <div class="mt-1 sm:mt-0 sm:col-span-2">
+            <% if @brand.logo.present? %>
+              <img class="my-5" style="max-width:20rem" src="<%=@brand.logo.url%>" />
+            <% end %>
+            <%= f.file_field :logo %>
+          </div>
+        </div>
+
+      </div>
+
+      <div class="pt-5">
+        <div class="flex justify-end">
+          <%= link_to brands_path, class: "bg-white py-2 px-4 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-orange-500" do %>
+            Cancel
+          <% end %>
+          <button type="submit" class="ml-3 inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-orange-600 hover:bg-orange-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-orange-500">
+            Save
+          </button>
+        </div>
+      </div>
+    <% end %>
+    
+  </div>
+  <% if @brand.persisted? %>
+    <%= render "users/new", object: @brand.id %>
+  <% end %>
+</div>
+
+<script>
+
+  function add_user(){
+    document.getElementById("add_user_modal").style.display = "block";
+  }
+
+function confirmDelete(userId) {
+  if (confirm("Are you sure?")) {
+    const form = document.createElement("form");
+    form.method = "post";
+    form.action = "/users/" + userId;
+
+    const csrfTokenInput = document.createElement("input");
+    csrfTokenInput.type = "hidden";
+    csrfTokenInput.name = "<%= request_forgery_protection_token %>";
+    csrfTokenInput.value = "<%= form_authenticity_token %>";
+
+    const methodInput = document.createElement("input");
+    methodInput.type = "hidden";
+    methodInput.name = "_method";
+    methodInput.value = "delete";
+
+    form.appendChild(csrfTokenInput);
+    form.appendChild(methodInput);
+    document.body.appendChild(form);
+
+    form.submit();
+  }
+}
+
+</script>
