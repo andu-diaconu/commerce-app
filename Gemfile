@@ -84,3 +84,5 @@ gem "tailwindcss-rails", "~> 2.0"
 
 # authentication gem
 gem 'devise'
+
+gem "matrix", "~> 0.4.2"

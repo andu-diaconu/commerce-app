@@ -309,6 +309,7 @@ DEPENDENCIES
   importmap-rails
   jbuilder
   jquery-rails
+  matrix (~> 0.4.2)
   pagy
   pg
   prawn
