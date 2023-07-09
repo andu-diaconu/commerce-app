@@ -2,6 +2,6 @@
   <%= form_with(model: [@single_room ,@message], remote: true, class: "d-flex" ) do |f| %>
       <span class="mr-10"></span>
       <%= f.text_field :content, id: 'input_message', class: "w-5/6 bg-zinc-200 py-5 px-3 pl-5 rounded-xl", autocomplete: "off", placeholder: 'Type in..' %>
-      <%= f.submit 'Send', data: { disable_with: false }, class: "ml-1 bg-orange-500 focus:bg-orange-500 text-white py-2 px-4 rounded-xl mt-2" %>
+      <%= f.submit 'Send', data: { disable_with: false }, class: "ml-1 bg-orange-400 hover:bg-orange-600 focus:bg-orange-500 text-white py-2 px-4 rounded-xl mt-2 cursor-pointer" %>
   <% end %>
 </div>

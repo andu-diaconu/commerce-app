@@ -72,13 +72,16 @@ class ProductsController < ApplicationController
     end
 
     if params[:stock_toggle_value].present?
-      if params[:stock_toggle_value] == "on"
+      if params[:stock_toggle_value] == "off"
         products = products.where("stock > 0")
       end
     end
 
     if params[:favorites_only].present?
-      redirect_to root_path, :flash => {alert: "Forbbiden!"} if current_user.present? && current_user.role == "Staff"
+      if current_user.nil? || current_user.role == "Staff"
+        redirect_to root_path, :flash => {alert: "Forbbiden!"}
+        return
+      end
       favorites = Favorite.where(user_id: current_user.id).pluck(:product_id)
       products = products.where(id: favorites)
     end
@@ -128,6 +131,7 @@ class ProductsController < ApplicationController
   end
 
   def update
+    @product = Product.find(params[:id])
     if current_user.nil? || !current_user.staff?  || @product.brand_id != current_user.brand.id
       redirect_to root_path, :flash => {alert: "Forbbiden!"}
       return

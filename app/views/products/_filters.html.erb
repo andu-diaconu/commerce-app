@@ -1,8 +1,8 @@
 <% filter_url = "/products"%>
 <div class="sticky top-0 bg-black shadow">
+<form  action=<%= filter_url %> method="GET">
   <div class="flex-1 px-4 flex justify-between">
     <div class="flex-1 flex">
-      <form class="relative md:ml-0" action=<%= filter_url %> method="GET">
           <% if request.url.to_s.include?("favorites_only=true") %>
             <%= hidden_field_tag "favorites_only", "true" %>
           <% end %>
@@ -47,9 +47,9 @@
       <input type="hidden" id="stock_toggle_value" name="stock_toggle_value" value="">
       <span class="text-white text-sm">Stock</span>
       <br/>
-      <button id="stock_toggle" type="button" onClick="toggleStock()" class="bg-orange-200 relative inline-flex h-6 w-11 flex-shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-orange-600 focus:ring-offset-2" role="switch" aria-checked="false">
-        <span id="on" aria-hidden="true" class="translate-x-0 pointer-events-none inline-block h-5 w-5 transform rounded-full bg-white shadow ring-0 transition duration-200 ease-in-out"></span>
-        <span id="off" aria-hidden="true" class="hidden translate-x-5 pointer-events-none inline-block h-5 w-5 transform rounded-full bg-white shadow ring-0 transition duration-200 ease-in-out"></span>
+      <button id="stock_toggle" type="button" onClick="toggleStock(<%=params[:stock_toggle_value]%>)" class="<%=params[:stock_toggle_value].nil? || params[:stock_toggle_value] == "on" ? "bg-orange-200" : "bg-orange-600" %> relative inline-flex h-6 w-11 flex-shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-orange-600 focus:ring-offset-2" role="switch" aria-checked="false">
+        <span id="on" aria-hidden="true" class="<%=params[:stock_toggle_value].nil? || params[:stock_toggle_value] == "on" ? "" : "hidden" %> translate-x-0 pointer-events-none inline-block h-5 w-5 transform rounded-full bg-white shadow ring-0 transition duration-200 ease-in-out"></span>
+        <span id="off" aria-hidden="true" class="<%= params[:stock_toggle_value].nil? || params[:stock_toggle_value] == "on" ? "hidden" : "" %> translate-x-5 pointer-events-none inline-block h-5 w-5 transform rounded-full bg-white shadow ring-0 transition duration-200 ease-in-out"></span>
       </button>
     </div>
 
@@ -67,21 +67,21 @@
 
 <script>
 
-  function toggleStock() {
+  function toggleStock(param) {
     var onElement = document.getElementById("on");
     var offElement = document.getElementById("off");
     var toggleValueInput = document.getElementById("stock_toggle_value");
 
-    if (onElement.style.display === "none") {
+    if ((typeof param !== "undefined" && onElement.style.display === '') || onElement.style.display === 'none') {
       document.getElementById("stock_toggle").style.backgroundColor = "gray";
       offElement.style.display = "none";
       onElement.style.display = "block";
-      toggleValueInput.value = "on"; // Setează valoarea "on" pentru toggle activat
+      toggleValueInput.value = "on";
     } else {
       document.getElementById("stock_toggle").style.backgroundColor = "orange";
       offElement.style.display = "block";
       onElement.style.display = "none";
-      toggleValueInput.value = "off"; // Setează valoarea "on" pentru toggle activat
+      toggleValueInput.value = "off";
     }
   }
 

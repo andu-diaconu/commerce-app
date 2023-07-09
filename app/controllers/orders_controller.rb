@@ -1,7 +1,10 @@
 class OrdersController < ApplicationController
 
   def index
-    redirect_to root_path, :flash => {alert: "Forbbiden!"} if current_user.staff?
+    if current_user.nil? || current_user.staff?
+      redirect_to root_path, :flash => {alert: "Forbbiden!"} 
+      return
+    end
     @orders = Order.where(user_id: current_user.id).order(created_at: :desc)
   end
 

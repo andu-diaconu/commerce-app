@@ -63,7 +63,7 @@ class DiscountsController < ApplicationController
 
   def check_staff
     if current_user.nil? || current_user.role != "Staff"
-      redirect_to :root_path, :flash => {alert: "Forbbiden!"}
+      redirect_to root_path, :flash => {alert: "Forbbiden!"}
     end
   end
 

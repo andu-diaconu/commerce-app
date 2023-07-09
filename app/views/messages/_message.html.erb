@@ -23,3 +23,10 @@
 <span class="flex text-gray-400 text-xs mb-4 ml-4 side-<%=message.user.id%>">
   <%= message.created_at.strftime('%e %b, %H:%M')%>
 </span>
+
+<script>
+  var list = document.getElementById("message_list");
+  list.scrollTop = list.scrollHeight;
+  var input = document.getElementById("input_message");
+  input.value = "";
+</script>

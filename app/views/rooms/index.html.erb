@@ -19,10 +19,14 @@
 
       <div class="w-full px-5 flex flex-col justify-between bg-zinc-300 rounded-lg overflow-y-auto">
         <%= turbo_stream_from @single_room %>
-        <div id="messages" class="overflow-y-auto">
-          <%= render @messages.reverse %>
-        </div>
-          <%= render partial: 'layouts/new_message_form' %>
+          <div id="message_list" class="h-5/6 pt-2 overflow-y-auto">
+            <div id="messages">
+              <%= render @messages %>
+            </div>
+          </div>
+          <div class="h-1/6">
+            <%= render partial: 'layouts/new_message_form' %>
+          </div>
       </div>
     </div>
   </div>
@@ -30,6 +34,6 @@
 </div>
 
 <script>
-  var messages = document.getElementById("messages");
-  messages.scrollTop = messages.scrollHeight;
+  var list = document.getElementById("message_list");
+  list.scrollTop = list.scrollHeight;
 </script>
