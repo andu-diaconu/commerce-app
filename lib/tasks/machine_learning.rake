@@ -1,6 +1,9 @@
 namespace :machine_learning do
   require 'csv'
   require 'tempfile'
+  require 'net/http'
+  require 'csv'
+  require 'uri'
    
   desc "Parse dataset and create db"
   task parse_dataset: :environment do
@@ -17,15 +20,20 @@ namespace :machine_learning do
     orders = []
     addresses = []
     credit_cards = []
-    filename = 'amazon_dataset.csv'
+    
+    url = URI.parse('https://adshopping.s3.eu-north-1.amazonaws.com/uploads/ai/amazon_dataset.csv')
+    response = Net::HTTP.get_response(url)
+    csv_data = response.body.force_encoding('UTF-8')
 
-    CSV.foreach(filename, headers: true) do |row|
+    csv_data.encode!('UTF-8', 'UTF-8', invalid: :replace, replace: '')
+
+    CSV.parse(csv_data, headers: true).each do |row|
       price = row["actual_price"].delete("₹").delete(",").to_f
       eur_price = (price * 0.011).round(2)
       label_name = row["product_name"].split(" ")[0, 6].join(" ")
       about_product = row["about_product"].gsub("|", "\n")
       rating_count = (row["rating_count"].gsub(",","") rescue 0)
-      rating_sum = row["rating"].to_f * rating_count.to_i
+      rating_sum = (row["rating"].to_f * rating_count.to_i)
       products << {identifier: row["product_id"], name: row["product_name"], label_name: label_name, description: about_product, price: eur_price, rating: row["rating"].to_d, rating_count: rating_count.to_i, rating_sum: rating_sum}
 
       categories_append << row["category"].split("|")
@@ -56,7 +64,7 @@ namespace :machine_learning do
     BillingAddress.insert_all(addresses)
     CreditCard.insert_all(credit_cards)
 
-    CSV.foreach(filename, headers: true) do |row|
+    CSV.parse(csv_data, headers: true).each do |row|
       product_id = Product.find_by(identifier: row["product_id"]).id
       splitted_categories = row["category"].split("|")
       category = Category.where(name: splitted_categories).pluck(:id)
@@ -126,8 +134,12 @@ namespace :machine_learning do
   task save_images: :environment do
     puts 'start'
 
-    filename = 'amazon_dataset.csv'
-    CSV.foreach(filename, headers: true) do |row|
+    url = URI.parse('https://adshopping.s3.eu-north-1.amazonaws.com/uploads/ai/amazon_dataset.csv')
+    response = Net::HTTP.get_response(url)
+    csv_data = response.body.force_encoding('UTF-8')
+
+    csv_data.encode!('UTF-8', 'UTF-8', invalid: :replace, replace: '')
+    CSV.parse(csv_data, headers: true).each do |row|
       if row["img_link"].include?("http")
         url = row['img_link']
         filename = "#{row['product_id']}.jpg"
@@ -155,8 +167,12 @@ namespace :machine_learning do
     puts 'start'
 
     batches = []
-    filename = 'amazon_dataset.csv'
-    CSV.foreach(filename, headers: true) do |row|
+    url = URI.parse('https://adshopping.s3.eu-north-1.amazonaws.com/uploads/ai/amazon_dataset.csv')
+    response = Net::HTTP.get_response(url)
+    csv_data = response.body.force_encoding('UTF-8')
+
+    csv_data.encode!('UTF-8', 'UTF-8', invalid: :replace, replace: '')
+    CSV.parse(csv_data, headers: true).each do |row|
       batches << {value: row["user_id"]}
     end
     EncodedUser.insert_all(batches)
