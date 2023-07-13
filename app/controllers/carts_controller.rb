@@ -8,7 +8,7 @@ class CartsController < ApplicationController
     session[:cart] ||= {}
     session[:cart][product_id] = quantity
 
-    redirect_back fallback_location: root_path, :flash => {notice: "Product added successfully to your cart!"}
+    redirect_to products_path, :flash => {notice: "Product added successfully to your cart!"}
   end
 
 

@@ -25,7 +25,8 @@ namespace :machine_learning do
       label_name = row["product_name"].split(" ")[0, 6].join(" ")
       about_product = row["about_product"].gsub("|", "\n")
       rating_count = (row["rating_count"].gsub(",","") rescue 0)
-      products << {identifier: row["product_id"], name: row["product_name"], label_name: label_name, description: about_product, price: eur_price, rating: row["rating"].to_d, rating_count: rating_count.to_i}
+      rating_sum = row["rating"].to_f * rating_count.to_i
+      products << {identifier: row["product_id"], name: row["product_name"], label_name: label_name, description: about_product, price: eur_price, rating: row["rating"].to_d, rating_count: rating_count.to_i, rating_sum: rating_sum}
 
       categories_append << row["category"].split("|")
       users_append << row["user_id"].split(",")
@@ -35,7 +36,7 @@ namespace :machine_learning do
     categories_append.flatten.uniq.each do |category|
       categories << {name: category}
     end
-    Category.insert_all(categories)
+    Category.insert_all!(categories)
     
     users_append.flatten.uniq.each do |user_identifier|
       fn = Faker::Name.first_name
@@ -46,7 +47,7 @@ namespace :machine_learning do
     User.insert_all(users)
 
     User.all.each do |usr|
-      addresses << {country: "United States", district: Faker::Address.state, city: Faker::Address.city, street: Faker::Address.street_name, bl: "#{('A'..'Z').to_a.sample}#{rand(10..99).to_s}", apartament: "#{rand(1..99)}", user_id: usr.id}
+      addresses << {country: ["United States", "United Kingdom", "Romania"] , district: Faker::Address.state, city: Faker::Address.city, street: Faker::Address.street_name, bl: "#{('A'..'Z').to_a.sample}#{rand(10..99).to_s}", apartament: "#{rand(1..99)}", user_id: usr.id}
       credit_cards << {card: ["Visa", "MasterCard", "Revolut"].sample, number: SecureRandom.random_number(10**16).to_s.rjust(16, "0"), 
         month: ["01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "12"].sample, year: "#{rand(24..32)}", cvv: "#{rand(101..999)}", 
         owner: usr.full_name, user_id: usr.id}
@@ -89,10 +90,12 @@ namespace :machine_learning do
       pretty_name = name.split(" ").join("-")
       brands << {name: name, website: "http://#{pretty_name}.com", email: "#{pretty_name}@gmail.com"}
     end
+    brands <<{name: "Logitech", website: "https://www.logitech.com/", email: "contact@logitech.com"}
     Brand.insert_all(brands)
 
     products = []
-    Product.all.each do |p|
+    Product.where("name ILIKE ?", "%logitech%").update_all(brand_id: Brand.find_by(name: "Logitech").id)
+    Product.where(brand_id: nil).each do |p|
       p.update(brand_id: rand(1..35))
     end
 
@@ -100,7 +103,7 @@ namespace :machine_learning do
       r = user.reviews.pluck(:product_id).uniq
       subtotal = Product.where(id: r).sum(:price)
       shipping_tax = rand(10..25)
-      payment = user.credit_card_id.present? ? "Credit Card" : "Cash"
+      payment = ["Credit Card", "Credit Card", "Cash"].sample
       deilvery = ["Easy Box", "Courier", "Pick-up from store"]
       orders << {subtotal: subtotal, shipping_tax: shipping_tax, total: (subtotal + shipping_tax), payment_method: payment, delivery_method: deilvery.sample, 
         user_id: user.id, shipping_address_id: user.shipping_address.id, billing_address_id: user.billing_address.id, credit_card_id: user.credit_card.id}
@@ -108,7 +111,7 @@ namespace :machine_learning do
     Order.insert_all(orders)
 
     Order.all.each do |o|
-      product_ids = o.user.reviews.pluck(:product_id).uniq
+      product_ids = (o.user.reviews.pluck(:product_id).uniq rescue [])
       products = Product.where(id: product_ids)
       products.each do |p|
         product_orders << {order_id: o.id, product_id: p.id, quantity: 1, price: p.price}
