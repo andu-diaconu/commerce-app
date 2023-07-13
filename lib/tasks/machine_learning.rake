@@ -134,30 +134,25 @@ namespace :machine_learning do
   task save_images: :environment do
     puts 'start'
 
-    url = URI.parse('https://adshopping.s3.eu-north-1.amazonaws.com/uploads/ai/amazon_dataset.csv')
-    response = Net::HTTP.get_response(url)
-    csv_data = response.body.force_encoding('UTF-8')
+    require 'open-uri'
 
-    csv_data.encode!('UTF-8', 'UTF-8', invalid: :replace, replace: '')
-    CSV.parse(csv_data, headers: true).each do |row|
-      if row["img_link"].include?("http")
-        url = row['img_link']
-        filename = "#{row['product_id']}.jpg"
-        
-        tempfile = Tempfile.new(['image', '.jpg'])
-        open(url, 'rb') do |image|
-          tempfile.binmode
-          tempfile.write image.read
-        end
-        
-        product = Product.find_by(identifier: row['product_id'])
-        product.update!(image: tempfile)
-        
-        tempfile.close
-        tempfile.unlink
+url = URI.parse('https://adshopping.s3.eu-north-1.amazonaws.com/uploads/ai/amazon_dataset.csv')
+response = Net::HTTP.get_response(url)
+csv_data = response.body
+CSV.parse(csv_data, headers: true).each do |row|
+  if row["img_link"].include?("http")
+    url = row['img_link']
+    filename = "#{row['product_id']}.jpg"
 
-      end
+    open(filename, 'wb') do |file|
+      file << URI.open(url).read
     end
+
+    product = Product.find_by(identifier: row['product_id'])
+    product.update!(image: filename)
+  end
+end
+
 
     puts 'end'
   end
