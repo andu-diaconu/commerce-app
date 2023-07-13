@@ -68,7 +68,7 @@ Rails.application.configure do
     address: 'smtp.gmail.com',
     port: 587,
     user_name: 'adshopping.contact@gmail.com',
-    password: '10Barcelona10',
+    password: 'qbbrqrbrtgfyqwzt',
     authentication: 'plain',
     enable_starttls_auto: true
   }
