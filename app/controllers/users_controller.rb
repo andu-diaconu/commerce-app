@@ -68,6 +68,7 @@ class UsersController < ApplicationController
 
       if params["country-billing"].present? &&  params["district-billing"].present? &&  params["city-billing"].present? &&  params["street-billing"].present? &&  params["bl-billing"].present? && params["first-name-billing"].present?
         params["last-name-billing"].present? &&  params["email-billing"].present? &&  params["phone-billing"].present?
+        BillingAddress.where(user_id: @user.id).update(user_id: nil)
         BillingAddress.find_or_create_by(
           country: params["country-biling"],
           district: params["district-billing"],
@@ -84,6 +85,7 @@ class UsersController < ApplicationController
 
       if params["country-shipping"].present? &&  params["district-shipping"].present? &&  params["city-shipping"].present? &&  params["street-shipping"].present? &&  params["bl-shipping"].present? && params["first-name-shipping"].present?
         params["last-name-shipping"].present? &&  params["email-shipping"].present? &&  params["phone-shipping"].present?
+        ShippingAddress.where(user_id: @user.id).update(user_id: nil)
         ShippingAddress.find_or_create_by(
           country: params["country-shipping"],
           district: params["district-shipping"],
@@ -99,6 +101,7 @@ class UsersController < ApplicationController
       end
 
       if params["card-type"].present? && params["card-number"].present? && params["expiration-month"].present? && params["expiration-year"].present? && params["cvv"].present? && params["cardholder-name"].present?
+        CreditCard.where(user_id: @user.id).update(user_id: nil)
         CreditCard.find_or_create_by(
           card: params["card-type"],
           number: params["card-number"],
